@@ -1,6 +1,14 @@
 import { Link } from '@tanstack/react-router'
 import { useState, type FormEvent } from 'react'
 
+import {
+  FacebookIcon,
+  InstagramIcon,
+  LinkedinIcon,
+  TwitterIcon,
+  YoutubeIcon,
+} from '@/components/ui/social-icons'
+
 const PROFILE_LINKS = [
   { label: 'Meu perfil', to: '/perfil', search: {} },
   { label: 'Minha coleção', to: '/pedidos', search: {} },
@@ -25,13 +33,12 @@ const COLLECTION_LINKS = [
   { label: 'Utilidade', id: 'utilidade' },
 ] as const
 
-/** O frame mostra quadradinhos com a sigla da rede; lucide-react 1.x não tem ícones de marca. */
 const SOCIALS = [
-  { label: 'Facebook', glyph: 'f' },
-  { label: 'Instagram', glyph: 'ig' },
-  { label: 'Twitter', glyph: 'x' },
-  { label: 'LinkedIn', glyph: 'in' },
-  { label: 'YouTube', glyph: 'yt' },
+  { label: 'Facebook', Icon: FacebookIcon },
+  { label: 'Instagram', Icon: InstagramIcon },
+  { label: 'Twitter', Icon: TwitterIcon },
+  { label: 'LinkedIn', Icon: LinkedinIcon },
+  { label: 'YouTube', Icon: YoutubeIcon },
 ] as const
 
 const FEATURES = [
@@ -151,15 +158,15 @@ export function SiteFooter() {
           <div>
             <h2 className="text-xs font-bold tracking-wide">Redes sociais</h2>
             <ul className="mt-4 flex gap-2">
-              {SOCIALS.map(({ label, glyph }) => (
+              {SOCIALS.map(({ label, Icon }) => (
                 <li key={label}>
                   <Link
                     to="/em-breve"
                     search={{ area: 'redes' }}
                     aria-label={`${label} (fora do escopo desta demonstração)`}
-                    className="flex h-8 w-8 items-center justify-center rounded-sm border border-line text-[10px] font-bold text-content-muted hover:border-accent hover:text-accent"
+                    className="flex h-8 w-8 items-center justify-center rounded-sm border border-line text-content-muted hover:border-accent hover:text-accent"
                   >
-                    {glyph}
+                    <Icon className="h-3.5 w-3.5" />
                   </Link>
                 </li>
               ))}

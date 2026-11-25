@@ -1,6 +1,8 @@
 import type { OrderStatus } from '@/contracts/order'
 import type { NftUpdatedPayload } from '@/contracts/realtime'
 
+import { queryClient } from '@/lib/query-client'
+
 import { worker } from './browser'
 import { db, getConfig, setConfig, type MockConfig, type RealtimeEvent } from './db'
 
@@ -22,6 +24,8 @@ export interface KurioDevtools {
   events(): RealtimeEvent[]
   /** Handlers registrados no worker (diagnóstico de MSW). */
   handlers(): Array<{ kind: string; header: string }>
+  /** Snapshot do cache do TanStack Query (diagnóstico de isolamento/chaves). */
+  cache(): Array<{ key: unknown; status: string; hasData: boolean }>
 }
 
 declare global {
@@ -59,5 +63,11 @@ export function installDevtools(): void {
           ? { kind: 'http', header: String(handler.info.header) }
           : { kind: 'websocket', header: handler.constructor.name },
       ),
+    cache: () =>
+      queryClient.getQueryCache().getAll().map((query) => ({
+        key: query.queryKey,
+        status: query.state.status,
+        hasData: query.state.data !== undefined,
+      })),
   }
 }

@@ -30,3 +30,6 @@ npm-debug.log*
 
 # TS build info
 *.tsbuildinfo
+
+# Capturas locais de comparacao visual (nao fazem parte da entrega)
+shots/
