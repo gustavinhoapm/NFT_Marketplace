@@ -52,7 +52,13 @@ export function useRealtime(): void {
       }
     }
 
+    /**
+     * Reconciliação pós-reconexão (W9): eventos perdidos enquanto o socket
+     * esteve fora são compensados recarregando os recursos ativos via REST.
+     */
     const onConnect = () => {
+      void queryClient.invalidateQueries({ queryKey: ['nfts'] })
+      void queryClient.invalidateQueries({ queryKey: ['nft'] })
       void queryClient.invalidateQueries({ queryKey: ['order'] })
       void queryClient.invalidateQueries({ queryKey: ['cart'] })
     }
