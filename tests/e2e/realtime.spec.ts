@@ -42,21 +42,20 @@ test('pedido só muda de status por evento do servidor', async ({ page }) => {
 
   // login
   await page.getByRole('button', { name: 'Entrar' }).first().click()
-  await page.getByLabel('E-mail').fill('gustavo@kurio.test')
-  await page.getByLabel('Senha').fill('kurio1234')
+  await page.getByLabel(/^E-mail/).fill('gustavo@kurio.test')
+  await page.getByLabel(/^Senha/).fill('kurio1234')
   await page.getByRole('button', { name: 'Entrar', exact: true }).last().click()
   await expect(page.getByRole('link', { name: /Gustavo/i })).toBeVisible()
 
-  // adiciona ao carrinho pela tela de detalhe
+  // compra direta pela tela de detalhe (adiciona e leva ao pagamento)
   await page.locator('article a').first().click()
-  await page.getByRole('button', { name: 'Adicionar' }).click()
-  await expect(page.getByText('Adicionado ao carrinho.')).toBeVisible()
+  await page.getByRole('button', { name: 'Comprar', exact: true }).first().click()
+  await expect(page).toHaveURL('/pagamento')
 
   // checkout
-  await page.goto('/pagamento')
   await page.getByLabel('Carteira cadastrada').selectOption({ index: 1 })
   await page.getByLabel('Nome completo').fill('Gustavo Teste')
-  await page.getByLabel('E-mail').fill('gustavo@kurio.test')
+  await page.getByLabel(/^E-mail/).fill('gustavo@kurio.test')
   await page.getByRole('button', { name: 'Confirmar compra' }).click()
 
   await expect(page.getByRole('heading', { name: /Pagamento em andamento|Sua compra foi confirmada/i })).toBeVisible()
