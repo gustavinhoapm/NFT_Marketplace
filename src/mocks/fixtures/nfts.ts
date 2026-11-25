@@ -145,7 +145,7 @@ export function createNftFixtures(): Nft[] {
       collectionId,
       collectionName: COLLECTION_NAMES[collectionId],
       network,
-      imageUrl: `/assets/nft/${art}.png`,
+      imageUrl: `/assets/nft/${art}.svg`,
       compareAtPriceEth: compareAt,
       rarity,
       attributes: ART_ATTRIBUTES[art],
