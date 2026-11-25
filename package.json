@@ -15,7 +15,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "lighthouse": "lhci autorun",
-    "lighthouse:desktop": "lhci autorun --config=lighthouserc.desktop.json"
+    "lighthouse:desktop": "lhci autorun --config=lighthouserc.desktop.json",
+    "lighthouse:summary": "node scripts/lighthouse-summary.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.9",
