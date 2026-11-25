@@ -1,15 +1,20 @@
+import { Eye, EyeOff } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
 
 import { useLogin, useRegister } from '@/hooks/use-auth'
 import { ApiError } from '@/lib/api-error'
-import { DEMO_CREDENTIALS } from '@/mocks/fixtures/users'
 
 import { Button } from './ui/button'
-import { FieldError, Label } from './ui/label'
-import { Input } from './ui/input'
+import { FieldError } from './ui/label'
 
 export type AuthMode = 'login' | 'register'
 
+/**
+ * Formulário de autenticação no padrão dos frames: inputs com placeholder
+ * (labels sr-only para acessibilidade), olho na senha, "Esqueceu a senha?" e
+ * login social. Recuperação de senha e OAuth real estão fora do escopo, então
+ * essas ações informam em vez de aparentar sucesso.
+ */
 export function AuthForm({
   mode,
   onSuccess,
@@ -19,14 +24,19 @@ export function AuthForm({
 }) {
   const login = useLogin()
   const register = useRegister()
-  const mutation = mode === 'login' ? login : register
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
-  const error = mutation.error instanceof ApiError ? mutation.error : null
+  const [showPassword, setShowPassword] = useState(false)
+  const [notice, setNotice] = useState<string | null>(null)
+  const error =
+    (login.error instanceof ApiError ? login.error : null) ??
+    (register.error instanceof ApiError ? register.error : null)
+  const isPending = mode === 'login' ? login.isPending : register.isPending
 
   function submit(event: FormEvent) {
     event.preventDefault()
+    setNotice(null)
     const options = { onSuccess: () => onSuccess?.() }
     if (mode === 'login') login.mutate({ email, password }, options)
     else register.mutate({ username, email, password }, options)
@@ -36,76 +46,104 @@ export function AuthForm({
     <form onSubmit={submit} noValidate className="space-y-4">
       {mode === 'register' && (
         <div>
-          <Label htmlFor="auth-username" required>Nome de usuário</Label>
-          <Input
+          <label htmlFor="auth-username" className="sr-only">Nome de usuário</label>
+          <input
             id="auth-username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
+            placeholder="usuario"
             autoComplete="username"
-            invalid={Boolean(error?.fieldErrors?.username)}
+            aria-invalid={Boolean(error?.fieldErrors?.username) || undefined}
+            className="h-12 w-full rounded-sm border border-line bg-ink px-4 text-sm placeholder:text-content-subtle focus:border-accent focus:outline-none"
           />
           <FieldError>{error?.fieldErrors?.username}</FieldError>
         </div>
       )}
 
       <div>
-        <Label htmlFor="auth-email" required>E-mail</Label>
-        <Input
+        <label htmlFor="auth-email" className="sr-only">E-mail</label>
+        <input
           id="auth-email"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
+          placeholder="contato@email.com"
           autoComplete="email"
-          invalid={Boolean(error?.fieldErrors?.email)}
+          aria-invalid={Boolean(error?.fieldErrors?.email) || undefined}
+          className="h-12 w-full rounded-sm border border-line bg-ink px-4 text-sm placeholder:text-content-subtle focus:border-accent focus:outline-none"
         />
         <FieldError>{error?.fieldErrors?.email}</FieldError>
       </div>
 
       <div>
-        <Label htmlFor="auth-password" required>Senha</Label>
-        <Input
-          id="auth-password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-          invalid={Boolean(error?.fieldErrors?.password)}
-        />
+        <label htmlFor="auth-password" className="sr-only">Senha</label>
+        <div className="relative">
+          <input
+            id="auth-password"
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="************"
+            autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+            aria-invalid={Boolean(error?.fieldErrors?.password) || undefined}
+            className="h-12 w-full rounded-sm border border-line bg-ink px-4 pr-12 text-sm placeholder:text-content-subtle focus:border-accent focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((value) => !value)}
+            aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+            className="absolute top-1/2 right-3 -translate-y-1/2 text-content-subtle hover:text-content"
+          >
+            {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+          </button>
+        </div>
         <FieldError>{error?.fieldErrors?.password}</FieldError>
       </div>
 
-      {error && !error.fieldErrors && (
-        <p role="alert" className="rounded-sm bg-danger/10 p-3 text-sm text-danger">
-          {error.message}
-        </p>
-      )}
-
-      <Button type="submit" full disabled={mutation.isPending}>
-        {mutation.isPending
-          ? 'Aguarde…'
-          : mode === 'login'
-            ? 'Entrar'
-            : 'Criar conta'}
-      </Button>
-
       {mode === 'login' && (
-        <div className="rounded-sm border border-line bg-coffee/40 p-3 text-xs text-content-muted">
-          <p className="mb-2 font-bold text-content">Contas de demonstração</p>
-          {DEMO_CREDENTIALS.map((credential) => (
-            <button
-              key={credential.email}
-              type="button"
-              onClick={() => {
-                setEmail(credential.email)
-                setPassword(credential.password)
-              }}
-              className="block text-left underline-offset-2 hover:text-accent hover:underline"
-            >
-              {credential.email} / {credential.password}
-            </button>
-          ))}
+        <div className="flex justify-end">
+          <button
+            type="button"
+            onClick={() => setNotice('A recuperação de senha não faz parte desta demonstração.')}
+            className="text-xs text-accent hover:underline"
+          >
+            Esqueceu a senha?
+          </button>
         </div>
       )}
+
+      {error && !error.fieldErrors && (
+        <p role="alert" className="rounded-sm bg-danger/10 p-3 text-sm text-danger">{error.message}</p>
+      )}
+      {notice && (
+        <p role="status" className="rounded-sm bg-coffee p-3 text-xs text-content-muted">{notice}</p>
+      )}
+
+      <Button type="submit" full size="lg" className="rounded-md" disabled={isPending}>
+        {isPending ? 'Aguarde…' : mode === 'login' ? 'Entrar' : 'Criar conta'}
+      </Button>
+
+      <div className="flex items-center gap-3 pt-2" aria-hidden="true">
+        <span className="h-px flex-1 bg-line" />
+        <span className="text-[11px] text-content-muted">Ou continue com</span>
+        <span className="h-px flex-1 bg-line" />
+      </div>
+
+      <div className="space-y-3">
+        {['Google', 'Facebook'].map((provider) => (
+          <button
+            key={provider}
+            type="button"
+            onClick={() => setNotice(`Login com ${provider} não faz parte desta demonstração.`)}
+            className="flex h-11 w-full items-center justify-center gap-3 rounded-sm border border-line text-xs hover:border-accent-muted"
+          >
+            <span aria-hidden="true" className="font-bold text-accent">
+              {provider === 'Google' ? 'G' : 'f'}
+            </span>
+            Continuar com {provider}
+          </button>
+        ))}
+      </div>
     </form>
   )
 }

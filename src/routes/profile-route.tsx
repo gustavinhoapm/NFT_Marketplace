@@ -1,4 +1,4 @@
-import { createRoute, redirect } from '@tanstack/react-router'
+import { createRoute, redirect, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 
@@ -26,6 +26,7 @@ export const profileRoute = createRoute({
 })
 
 function ProfilePage() {
+  const navigate = useNavigate()
   const { data: profile, isPending } = useProfile()
   const update = useUpdateProfile()
   const changePassword = useChangePassword()
@@ -182,7 +183,14 @@ function ProfilePage() {
         <Button
           variant="ghost"
           disabled={logout.isPending}
-          onClick={() => logout.mutate(undefined, { onSuccess: () => toast.info('Sessão encerrada.') })}
+          onClick={() =>
+            logout.mutate(undefined, {
+              onSuccess: () => {
+                toast.info('Sessão encerrada.')
+                void navigate({ to: '/' })
+              },
+            })
+          }
         >
           Sair da conta
         </Button>

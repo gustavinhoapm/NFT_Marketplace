@@ -51,7 +51,7 @@ export function Dialog({
       <div
         role="dialog"
         aria-modal="true"
-        aria-labelledby={titleId}
+        aria-labelledby={title ? titleId : undefined}
         className={cn(
           'relative z-10 max-h-[90vh] w-full max-w-md overflow-y-auto rounded-lg border border-line bg-surface p-6 shadow-2xl',
           className,
@@ -59,9 +59,11 @@ export function Dialog({
       >
         <div className="mb-5 flex items-start justify-between gap-4">
           <div>
-            <h2 id={titleId} className="text-xl font-bold tracking-tight">
-              {title}
-            </h2>
+            {title && (
+              <h2 id={titleId} className="text-xl font-bold tracking-tight">
+                {title}
+              </h2>
+            )}
             {description && (
               <p className="mt-2 text-sm text-content-muted">{description}</p>
             )}

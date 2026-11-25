@@ -17,25 +17,23 @@ function RegisterPage() {
   const navigate = useNavigate()
   const { redirect } = registerRoute.useSearch()
 
+  function done() {
+    if (redirect?.startsWith('/')) window.location.assign(redirect)
+    else void navigate({ to: '/' })
+  }
+
   return (
-    <main className="mx-auto flex min-h-[75vh] max-w-md flex-col justify-center px-4 py-12">
-      <p className="text-xs font-bold tracking-[0.28em] text-accent uppercase">Novo colecionador</p>
-      <h1 className="mt-3 text-3xl font-bold">Crie sua conta</h1>
-      <p className="mt-2 mb-8 text-sm text-content-muted">
-        Seu carrinho de visitante será preservado.
-      </p>
+    <main className="mx-auto flex min-h-[85vh] max-w-md flex-col justify-center px-6 py-12">
+      <p className="text-center text-2xl font-bold tracking-[0.3em]">KURIO</p>
+      <h1 className="mt-16 text-center text-lg font-bold tracking-wide">Criar conta</h1>
 
-      <AuthForm
-        mode="register"
-        onSuccess={() => {
-          if (redirect?.startsWith('/')) window.location.assign(redirect)
-          else void navigate({ to: '/' })
-        }}
-      />
+      <div className="mt-8">
+        <AuthForm mode="register" onSuccess={done} />
+      </div>
 
-      <p className="mt-6 text-center text-sm text-content-muted">
+      <p className="mt-8 text-center text-xs text-content-muted">
         Já tem conta?{' '}
-        <Link to="/entrar" search={{ redirect }} className="font-bold text-accent hover:underline">
+        <Link to="/entrar" search={{ redirect }} className="font-bold text-content hover:text-accent">
           Entre
         </Link>
       </p>
