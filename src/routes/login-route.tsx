@@ -26,6 +26,11 @@ function LoginPage() {
     <main className="mx-auto flex min-h-[85vh] max-w-md flex-col justify-center px-6 py-12">
       <p className="text-center text-2xl font-bold tracking-[0.3em]">KURIO</p>
       <h1 className="mt-16 text-center text-lg font-bold tracking-wide">Entrar</h1>
+      {redirect?.startsWith('/pagamento') && (
+        <p className="mt-3 text-center text-[11px] text-content-muted">
+          Seu carrinho de visitante será preservado e mesclado à sua conta.
+        </p>
+      )}
 
       <div className="mt-8">
         <AuthForm mode="login" onSuccess={done} />
