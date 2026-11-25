@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { openFiltersIfNeeded, searchInput } from './helpers'
+
 /**
  * Catálogo: busca, filtros combinados, ordenação, paginação e restauração
  * pelo histórico — tudo compondo a URL (requisito de catálogo/detalhe).
@@ -13,20 +15,22 @@ test.beforeEach(async ({ page }) => {
 })
 
 test('busca compõe a URL e sobrevive a refresh', async ({ page }) => {
-  await page.locator('#header-search').fill('emerald')
-  await page.locator('#header-search').press('Enter')
+  const search = searchInput(page)
+  await search.fill('emerald')
+  await search.press('Enter')
   await expect(page).toHaveURL(/\?q=emerald/)
   await expect(page.locator('#catalogo article')).toHaveCount(3)
 
   await page.reload()
-  await expect(page.locator('#header-search')).toHaveValue('emerald')
+  await expect(searchInput(page)).toHaveValue('emerald')
   await expect(page.locator('#catalogo article')).toHaveCount(3)
 })
 
 test('filtros combinados reiniciam a paginação', async ({ page }) => {
+  await openFiltersIfNeeded(page)
   await page.getByRole('button', { name: 'Arte digital' }).click()
   await expect(page).toHaveURL(/collections=arte-digital/)
-  await page.getByRole('button', { name: 'polygon', exact: false }).first().click()
+  await page.getByRole('button', { name: /polygon/ }).first().click()
   await expect(page).toHaveURL(/networks=polygon/)
   await expect(page).not.toHaveURL(/page=/)
 
@@ -65,8 +69,9 @@ test('abas de segmento filtram no servidor', async ({ page }) => {
 })
 
 test('resultado vazio tem recuperação', async ({ page }) => {
-  await page.locator('#header-search').fill('xyzzy-inexistente')
-  await page.locator('#header-search').press('Enter')
+  const search = searchInput(page)
+  await search.fill('xyzzy-inexistente')
+  await search.press('Enter')
   await expect(page.getByText('Nenhum NFT encontrado')).toBeVisible()
   await page.getByRole('button', { name: 'Limpar filtros' }).click()
   await expect(page.locator('#catalogo article').first()).toBeVisible()

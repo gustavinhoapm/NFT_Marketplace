@@ -14,7 +14,9 @@ test('skeletons durante carregamento lento', async ({ page }) => {
   await page.evaluate(() => window.__KURIO__.config({ latencyMs: 2500 }))
   await page.reload()
   // skeletons do catálogo visíveis enquanto a resposta não chega
-  await expect(page.locator('[aria-hidden="true"].animate-pulse').first()).toBeVisible()
+  await expect(
+    page.locator('[aria-hidden="true"].animate-pulse').locator('visible=true').first(),
+  ).toBeVisible()
   await expect(page.locator('article').first()).toBeVisible({ timeout: 15_000 })
   await page.evaluate(() => window.__KURIO__.config({ latencyMs: 160 }))
 })
@@ -29,6 +31,8 @@ test('falha de conexão mostra erro e recupera após nova tentativa', async ({ p
 })
 
 test('navegação por teclado alcança filtros e abre diálogo com foco controlado', async ({ page }) => {
+  // fluxo de modal de login é do desktop; no mobile o login é página própria
+  test.skip((page.viewportSize()?.width ?? 1280) < 768, 'modal de login é desktop-only')
   await page.reload()
   await page.waitForSelector('article')
 

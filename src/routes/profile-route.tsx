@@ -13,7 +13,6 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { ApiError, errorMessage } from '@/lib/api-error'
 import { getSessionToken } from '@/lib/session'
 import { useChangePassword, useProfile, useUpdateProfile } from '@/hooks/use-account'
-import { useLogout } from '@/hooks/use-auth'
 
 import { rootRoute } from './root-route'
 
@@ -73,7 +72,6 @@ function ProfilePage() {
   const { data: profile, isPending } = useProfile()
   const update = useUpdateProfile()
   const changePassword = useChangePassword()
-  const logout = useLogout()
 
   const [displayName, setDisplayName] = useState('')
   const [username, setUsername] = useState('')
@@ -241,15 +239,6 @@ function ProfilePage() {
             </Button>
           </form>
 
-          <div className="mt-10 border-t border-line pt-6 lg:hidden">
-            <Button
-              variant="ghost"
-              disabled={logout.isPending}
-              onClick={() => logout.mutate(undefined, { onSuccess: () => window.location.assign('/') })}
-            >
-              Sair da conta
-            </Button>
-          </div>
           <AccountMobileFooter />
         </section>
       </div>

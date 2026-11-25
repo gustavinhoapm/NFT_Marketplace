@@ -9,9 +9,11 @@ test('logout limpa o nome no header e os dados privados', async ({ page }) => {
   await expect(page.locator('header')).toContainText('Gustavo')
 
   await page.goto('/perfil')
-  await page.getByRole('button', { name: 'Sair', exact: true }).click()
+  await page.getByRole('button', { name: /^Sair/ }).locator('visible=true').first().click()
   await expect(page).toHaveURL('/')
-  await expect(page.locator('header')).toContainText('Entrar')
+  await page.waitForFunction(() => Boolean(window.__KURIO__))
+  // nenhum affordance autenticado permanece (header no desktop, bottom nav no mobile)
+  await expect(page.getByRole('link', { name: /Gustavo/ })).toHaveCount(0)
   await expect
     .poll(() => page.evaluate(() => localStorage.getItem('kurio:session-token')))
     .toBeNull()

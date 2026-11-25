@@ -53,7 +53,7 @@ test('troca de usuário não expõe dados do anterior', async ({ page }) => {
   await page.getByRole('button', { name: 'Favoritar' }).click()
 
   await page.goto('/perfil')
-  await page.getByRole('button', { name: 'Sair', exact: true }).click()
+  await page.getByRole('button', { name: /^Sair/ }).locator('visible=true').first().click()
   await expect(page).toHaveURL('/')
 
   await page.goto('/entrar')

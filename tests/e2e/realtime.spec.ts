@@ -48,12 +48,12 @@ test('pedido só muda de status por evento do servidor', async ({ page }) => {
   await waitForMocks(page)
   await page.evaluate(() => window.__KURIO__.reset())
 
-  // login
-  await page.getByRole('button', { name: 'Entrar' }).first().click()
+  // login (página própria funciona nos dois viewports)
+  await page.goto('/entrar')
   await page.getByLabel(/^E-mail/).fill('gustavo@kurio.test')
   await page.getByLabel(/^Senha/).fill('kurio1234')
   await page.getByRole('button', { name: 'Entrar', exact: true }).last().click()
-  await expect(page.getByRole('link', { name: /Gustavo/i })).toBeVisible()
+  await expect(page).toHaveURL('/')
 
   // compra direta pela tela de detalhe (adiciona e leva ao pagamento)
   await page.locator('article a').first().click()
@@ -61,7 +61,7 @@ test('pedido só muda de status por evento do servidor', async ({ page }) => {
   await expect(page).toHaveURL('/pagamento')
 
   // checkout: carteira primária e dados do perfil já vêm pré-selecionados
-  const confirm = page.getByRole('button', { name: 'Confirmar compra' }).first()
+  const confirm = page.getByRole('button', { name: 'Confirmar compra' }).locator('visible=true').first()
   await expect(confirm).toBeEnabled({ timeout: 15_000 })
   await confirm.click()
 

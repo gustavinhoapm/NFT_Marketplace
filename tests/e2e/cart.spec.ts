@@ -24,7 +24,7 @@ test('quantidade, cupom e remoção', async ({ page }) => {
   await login(page)
   // nft_007 (Golden Beat #207) tem edição com estoque > 1
   await page.goto('/nft/nft_007')
-  await page.getByRole('button', { name: 'Comprar', exact: true }).first().click()
+  await page.getByRole('button', { name: 'Comprar', exact: true }).locator('visible=true').first().click()
   await expect(page).toHaveURL('/pagamento')
   await page.goto('/carrinho')
 
@@ -49,7 +49,7 @@ test('quantidade, cupom e remoção', async ({ page }) => {
 
 test('carrinho de visitante é preservado ao autenticar', async ({ page }) => {
   await page.goto('/nft/nft_001')
-  await page.getByRole('button', { name: 'Comprar', exact: true }).first().click()
+  await page.getByRole('button', { name: 'Comprar', exact: true }).locator('visible=true').first().click()
   // deslogado: checkout redireciona para o login preservando o destino
   await expect(page).toHaveURL(/\/entrar\?redirect=/)
   await page.getByLabel(/^E-mail/).fill('nova@kurio.test')

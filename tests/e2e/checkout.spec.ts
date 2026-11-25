@@ -29,7 +29,7 @@ test.beforeEach(async ({ page }) => {
 
 test('compra completa do catálogo ao recibo confirmado', async ({ page }) => {
   await addToCart(page, 'nft_007')
-  await page.getByRole('button', { name: 'Confirmar compra' }).first().click()
+  await page.getByRole('button', { name: 'Confirmar compra' }).locator('visible=true').first().click()
 
   await expect(
     page.getByRole('heading', { name: /Pagamento em andamento|Seus NFTs agora estão/i }),
@@ -47,7 +47,7 @@ test('compra completa do catálogo ao recibo confirmado', async ({ page }) => {
 test('pagamento recusado mantém os itens no carrinho', async ({ page }) => {
   await addToCart(page, 'nft_007')
   await page.getByLabel(/Cenário de demonstração/).check()
-  await page.getByRole('button', { name: 'Confirmar compra' }).first().click()
+  await page.getByRole('button', { name: 'Confirmar compra' }).locator('visible=true').first().click()
 
   await expect(page.getByRole('heading', { name: /Pagamento recusado/i })).toBeVisible({
     timeout: 20_000,
@@ -58,7 +58,7 @@ test('pagamento recusado mantém os itens no carrinho', async ({ page }) => {
 
 test('clique repetido não duplica o pedido (idempotência)', async ({ page }) => {
   await addToCart(page, 'nft_007')
-  const confirm = page.getByRole('button', { name: 'Confirmar compra' }).first()
+  const confirm = page.getByRole('button', { name: 'Confirmar compra' }).locator('visible=true').first()
   // dois cliques rápidos: o segundo ainda carrega a mesma chave de idempotência
   await confirm.click({ clickCount: 2 })
 
@@ -77,7 +77,7 @@ test('timeout após criação recupera o mesmo pedido', async ({ page }) => {
   await addToCart(page, 'nft_007')
   // servidor some com a resposta da criação (timeout no cliente)
   await page.evaluate(() => window.__KURIO__.config({ timeoutMs: 12_000 }))
-  const confirm = page.getByRole('button', { name: 'Confirmar compra' }).first()
+  const confirm = page.getByRole('button', { name: 'Confirmar compra' }).locator('visible=true').first()
   await confirm.click()
   await expect(page.getByRole('alert')).toBeVisible({ timeout: 20_000 })
 
@@ -103,7 +103,7 @@ test('cotação desatualizada bloqueia a confirmação', async ({ page }) => {
     window.__KURIO__.patchEdition(item.nftId, item.editionId, { priceEth: '3.33' }, 'price-changed')
   })
   await page.waitForTimeout(1500)
-  await page.getByRole('button', { name: 'Confirmar compra' }).first().click()
+  await page.getByRole('button', { name: 'Confirmar compra' }).locator('visible=true').first().click()
   await expect(page.getByRole('alert')).toBeVisible()
   await expect(page.getByRole('button', { name: /Atualizar e confirmar de novo/i })).toBeVisible()
 })
