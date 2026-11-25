@@ -106,13 +106,22 @@ cliente descarta duplicatas e versões antigas antes de tocar o cache.
   para atingir ≥ 4.5:1 sobre `ink`/`surface`.
 - **Back/forward cache:** o service worker do MSW impede bf-cache. É inerente
   ao mocking na camada de rede em produção de demonstração.
-- **Performance mobile (~0.85–0.9):** o boot precisa aguardar o registro do
-  service worker antes do primeiro request (condição de corrida do MSW); para
-  não deixar a tela em branco, renderizamos uma casca de skeletons com a mesma
-  geometria do conteúdo. Imagens em next-gen (WebP/AVIF) e a remoção do JS não
-  usado dos mocks no boot são melhorias possíveis não realizadas para não
-  alterar o comportamento de demonstração exigido (mocks ativos no build
-  publicado).
+- **Performance abaixo da meta (justificativa exigida pelo enunciado):**
+  medianas de 85–87 (mobile) e 81–82 (desktop), contra meta ≥ 90; demais
+  categorias 99–100 (ver `docs/lighthouse/RESULTADOS.md`). Causas identificadas:
+  1. o mocking na camada de rede obriga o boot a aguardar o registro do service
+     worker antes do primeiro request (condição de corrida do MSW) — sem isso o
+     primeiro fetch escaparia do mock;
+  2. o build de demonstração carrega os mocks (~236 KB gzip) e o cliente
+     Socket.IO no caminho crítico, por exigência do enunciado ("camada de mocks
+     disponível no build de demonstração");
+  3. a latência simulada padrão (160 ms) soma ao TTFB percebido do primeiro
+     catálogo, que alimenta o LCP (imagem do hero).
+  Mitigações já aplicadas: casca de skeletons no primeiro paint (FCP não depende
+   da API), preload da imagem de LCP, code-splitting (react/tanstack/mocks),
+   imagens JPEG 640px (~45 KB), CLS ≤ 0.05. Melhorias restantes possíveis
+   (WebP/AVIF, adiar mocks para após o primeiro paint com cache HTTP) foram
+   descartadas por alterarem o comportamento de demonstração exigido.
 
 ## Limitações conhecidas
 

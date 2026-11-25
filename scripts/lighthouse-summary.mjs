@@ -3,7 +3,7 @@
  * docs/lighthouse/RESULTADOS.md com a mediana de cada categoria por página e
  * perfil, além de LCP/CLS/TBT. Uso: node scripts/lighthouse-summary.mjs
  */
-import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const DIR = '.lighthouseci'
@@ -27,6 +27,7 @@ for (const profile of profiles) {
   const perUrl = {}
   for (const file of files) {
     const report = JSON.parse(readFileSync(join(dir, file), 'utf8'))
+    if (!report.categories) continue // manifest e afins
     const url = new URL(report.finalDisplayedUrl ?? report.requestedUrl).pathname
     const entry = (perUrl[url] ??= { categories: {}, metrics: {} })
     for (const [key, category] of Object.entries(report.categories ?? {})) {
@@ -75,5 +76,6 @@ lines.push(
   '',
 )
 
+mkdirSync('docs/lighthouse', { recursive: true })
 writeFileSync('docs/lighthouse/RESULTADOS.md', lines.join('\n'))
 console.log('docs/lighthouse/RESULTADOS.md atualizado')
