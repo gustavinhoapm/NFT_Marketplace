@@ -15,6 +15,8 @@ export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
 export interface OrderItemSnapshot {
   nftId: string
   editionId: string
+  /** Token exibível ("#0042") congelado no snapshot do recibo. */
+  tokenId: string
   name: string
   imageUrl: string
   editionLabel: string

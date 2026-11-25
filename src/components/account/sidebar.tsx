@@ -1,4 +1,4 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link } from '@tanstack/react-router'
 import {
   CircleUser,
   Download,
@@ -25,7 +25,6 @@ const ITEMS = [
 
 /** Sidebar "Meu perfil" dos frames de perfil e carteiras. */
 export function AccountSidebar({ active }: { active: 'perfil' | 'carteiras' }) {
-  const navigate = useNavigate()
   const logout = useLogout()
 
   return (

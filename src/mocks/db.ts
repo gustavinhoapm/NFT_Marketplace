@@ -1162,6 +1162,7 @@ class MockDatabase {
       return {
         nftId: nft.id,
         editionId: edition.id,
+        tokenId: nft.tokenId,
         name: nft.name,
         imageUrl: nft.imageUrl,
         editionLabel: edition.label,
