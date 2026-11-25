@@ -9,7 +9,7 @@ test('logout limpa o nome no header e os dados privados', async ({ page }) => {
   await expect(page.locator('header')).toContainText('Gustavo')
 
   await page.goto('/perfil')
-  await page.getByRole('button', { name: 'Sair da conta' }).click()
+  await page.getByRole('button', { name: 'Sair', exact: true }).click()
   await expect(page).toHaveURL('/')
   await expect(page.locator('header')).toContainText('Entrar')
   await expect
