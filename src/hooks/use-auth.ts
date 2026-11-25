@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { api } from '@/api'
 import { clearSessionToken, getSessionToken, setSessionToken } from '@/lib/session'
-import { disconnectSocket } from '@/lib/socket'
 
 /**
  * Chave constante: todos os componentes observam a MESMA query de sessão.
@@ -72,7 +71,11 @@ export function useLogout() {
        */
       queryClient.setQueriesData({ predicate: isPrivateQuery }, () => undefined)
       clearSessionToken()
-      disconnectSocket()
+      /**
+       * Import dinâmico: `lib/socket` carrega o socket.io-client, que precisa
+       * ser avaliado DEPOIS do patch de WebSocket do MSW (ver main.tsx).
+       */
+      void import('@/lib/socket').then((socket) => socket.disconnectSocket())
       queryClient.removeQueries({ predicate: isPrivateQuery })
       /**
        * Redirect de página após logout: garante que nenhum observer montado
