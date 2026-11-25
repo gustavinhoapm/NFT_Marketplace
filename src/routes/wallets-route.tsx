@@ -1,21 +1,20 @@
 import { createRoute, redirect } from '@tanstack/react-router'
-import { Pencil, Plus } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
 import { toast } from 'sonner'
 
+import { AccountMobileFooter, AccountSidebar } from '@/components/account/sidebar'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Dialog } from '@/components/ui/dialog'
 import { FieldError, Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Select } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ApiError, errorMessage } from '@/lib/api-error'
-import { getSessionToken } from '@/lib/session'
-import { useCreateWallet, useUpdateWallet, useWallets } from '@/hooks/use-account'
 import type { Network } from '@/contracts/common'
 import type { Wallet } from '@/contracts/profile'
 import { WALLET_TYPE_LABELS, type WalletType } from '@/contracts/order'
+import { ApiError, errorMessage } from '@/lib/api-error'
+import { getSessionToken } from '@/lib/session'
+import { useCreateWallet, useUpdateWallet, useWallets } from '@/hooks/use-account'
+import { useProfile, useUpdateProfile } from '@/hooks/use-account'
 
 import { rootRoute } from './root-route'
 
@@ -33,161 +32,359 @@ export const walletsRoute = createRoute({
 const NETWORKS: Network[] = ['ethereum', 'polygon', 'solana']
 const TYPES = Object.keys(WALLET_TYPE_LABELS) as WalletType[]
 
+interface WalletFormState {
+  label: string
+  address: string
+  network: Network | ''
+  type: WalletType | ''
+  ensName: string
+  referralCode: string
+  displayName: string
+  profileName: string
+  email: string
+  ensSuffixName: string
+}
+
+const EMPTY_FORM: WalletFormState = {
+  label: '',
+  address: '',
+  network: '',
+  type: '',
+  ensName: '',
+  referralCode: '',
+  displayName: '',
+  profileName: '',
+  email: '',
+  ensSuffixName: '',
+}
+
 function WalletsPage() {
   const { data: wallets, isPending } = useWallets()
+  const { data: profile } = useProfile()
+  const updateProfile = useUpdateProfile()
   const create = useCreateWallet()
   const update = useUpdateWallet()
-  const [editing, setEditing] = useState<Wallet | null>(null)
-  const [open, setOpen] = useState(false)
-  const [label, setLabel] = useState('')
-  const [address, setAddress] = useState('')
-  const [network, setNetwork] = useState<Network>('ethereum')
-  const [type, setType] = useState<WalletType>('metamask')
-  const [ensName, setEnsName] = useState('')
-  const [referralCode, setReferralCode] = useState('')
+
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [creating, setCreating] = useState(false)
+  const [sameAsPrimary, setSameAsPrimary] = useState(false)
+  const [form, setForm] = useState<WalletFormState>(EMPTY_FORM)
+  const [errors, setErrors] = useState<Record<string, string>>({})
+
+  const primary = wallets?.find((wallet) => wallet.isPrimary) ?? wallets?.[0]
+  const secondaries = (wallets ?? []).filter((wallet) => wallet.id !== primary?.id)
+  const editing = wallets?.find((wallet) => wallet.id === editingId) ?? null
+  const formOpen = creating || Boolean(editing)
 
   useEffect(() => {
-    if (!open) return
-    setLabel(editing?.label ?? '')
-    setAddress(editing?.address ?? '')
-    setNetwork(editing?.network ?? 'ethereum')
-    setType(editing?.type ?? 'metamask')
-    setEnsName(editing?.ensName ?? '')
-    setReferralCode(editing?.referralCode ?? '')
-  }, [open, editing])
+    if (!primary || formOpen) return
+    setForm({
+      label: primary.label,
+      address: primary.address,
+      network: primary.network,
+      type: primary.type,
+      ensName: (primary.ensName ?? '').replace(/\.eth$/, ''),
+      referralCode: primary.referralCode,
+      displayName: profile?.displayName ?? '',
+      profileName: profile?.displayName ?? '',
+      email: profile?.email ?? '',
+      ensSuffixName: (profile?.ensName ?? '').replace(/\.eth$/, ''),
+    })
+  }, [primary, profile, formOpen])
+
+  function set<K extends keyof WalletFormState>(key: K, value: WalletFormState[K]) {
+    setForm((current) => ({ ...current, [key]: value }))
+  }
 
   function openCreate() {
-    setEditing(null)
-    setOpen(true)
+    setEditingId(null)
+    setCreating(true)
+    setErrors({})
+    setForm({
+      ...EMPTY_FORM,
+      address: sameAsPrimary ? (primary?.address ?? '') : '',
+      displayName: profile?.displayName ?? '',
+      profileName: profile?.displayName ?? '',
+      email: profile?.email ?? '',
+    })
   }
 
   function openEdit(wallet: Wallet) {
-    setEditing(wallet)
-    setOpen(true)
+    setCreating(false)
+    setEditingId(wallet.id)
+    setErrors({})
+    setForm({
+      label: wallet.label,
+      address: wallet.address,
+      network: wallet.network,
+      type: wallet.type,
+      ensName: (wallet.ensName ?? '').replace(/\.eth$/, ''),
+      referralCode: wallet.referralCode,
+      displayName: profile?.displayName ?? '',
+      profileName: profile?.displayName ?? '',
+      email: profile?.email ?? '',
+      ensSuffixName: (profile?.ensName ?? '').replace(/\.eth$/, ''),
+    })
+  }
+
+  function validate(): Record<string, string> {
+    const next: Record<string, string> = {}
+    if (!form.label.trim()) next.label = 'Obrigatório'
+    if (!/^0x[a-fA-F0-9]{6,}$/.test(form.address)) next.address = 'Endereço 0x inválido'
+    if (!form.network) next.network = 'Selecione uma rede'
+    if (!form.type) next.type = 'Selecione uma carteira'
+    if (!form.referralCode.trim()) next.referralCode = 'Obrigatório'
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) next.email = 'E-mail inválido'
+    if (!form.displayName.trim()) next.displayName = 'Obrigatório'
+    if (!form.profileName.trim()) next.profileName = 'Obrigatório'
+    if (!form.ensSuffixName.trim()) next.ensSuffixName = 'Obrigatório'
+    return next
   }
 
   function submit(event: FormEvent) {
     event.preventDefault()
-    const payload = { label, address, network, type, ensName, referralCode }
-    const mutation = editing
-      ? update.mutate.bind(update, { id: editing.id, body: payload })
-      : create.mutate.bind(create, payload)
-    mutation({
-      onSuccess: () => {
-        setOpen(false)
-        toast.success(editing ? 'Carteira atualizada.' : 'Carteira cadastrada.')
-      },
-      onError: (error: unknown) => toast.error(errorMessage(error)),
-    })
+    const nextErrors = validate()
+    setErrors(nextErrors)
+    if (Object.keys(nextErrors).length) return
+
+    const walletBody = {
+      label: form.label,
+      address: form.address,
+      network: form.network as Network,
+      type: form.type as WalletType,
+      ensName: form.ensName ? `${form.ensName}.eth` : '',
+      referralCode: form.referralCode,
+    }
+    const profileBody = {
+      displayName: form.displayName,
+      username: profile?.username ?? '',
+      email: form.email,
+      ensName: form.ensSuffixName ? `${form.ensSuffixName}.eth` : '',
+      walletNickname: form.label,
+      avatarUrl: profile?.avatarUrl ?? null,
+    }
+
+    const saveProfile = () =>
+      updateProfile.mutateAsync(profileBody).catch((error) => {
+        toast.error(errorMessage(error))
+        throw error
+      })
+
+    if (editing) {
+      update.mutate(
+        { id: editing.id, body: walletBody },
+        {
+          onSuccess: async () => {
+            await saveProfile().catch(() => undefined)
+            toast.success('Carteira atualizada.')
+            setCreating(false)
+            setEditingId(null)
+          },
+          onError: (error) => toast.error(errorMessage(error)),
+        },
+      )
+    } else {
+      create.mutate(walletBody, {
+        onSuccess: async () => {
+          await saveProfile().catch(() => undefined)
+          toast.success('Carteira cadastrada.')
+          setCreating(false)
+          setEditingId(null)
+        },
+        onError: (error) => {
+          if (error instanceof ApiError && error.fieldErrors) setErrors(error.fieldErrors)
+          else toast.error(errorMessage(error))
+        },
+      })
+    }
   }
 
-  const error = (editing ? update.error : create.error) instanceof ApiError
-    ? (editing ? update.error : create.error) as ApiError
-    : null
+  const fields = (
+    <div className="grid gap-x-8 gap-y-5 sm:grid-cols-2">
+      <div>
+        <Label htmlFor="wallet-display" required>Nome de exibição</Label>
+        <Input id="wallet-display" value={form.displayName} onChange={(e) => set('displayName', e.target.value)} invalid={Boolean(errors.displayName)} />
+        <FieldError>{errors.displayName}</FieldError>
+      </div>
+      <div>
+        <Label htmlFor="wallet-label" required>Apelido da carteira</Label>
+        <Input id="wallet-label" value={form.label} onChange={(e) => set('label', e.target.value)} invalid={Boolean(errors.label)} />
+        <FieldError>{errors.label}</FieldError>
+      </div>
+      <div>
+        <Label htmlFor="wallet-network" required>Rede</Label>
+        <Select id="wallet-network" value={form.network} onChange={(e) => set('network', e.target.value as Network)} invalid={Boolean(errors.network)}>
+          <option value="">Selecione uma rede</option>
+          {NETWORKS.map((item) => <option key={item} value={item}>{item}</option>)}
+        </Select>
+        <FieldError>{errors.network}</FieldError>
+      </div>
+      <div>
+        <Label htmlFor="wallet-profile" required>Nome do perfil</Label>
+        <Input id="wallet-profile" value={form.profileName} onChange={(e) => set('profileName', e.target.value)} invalid={Boolean(errors.profileName)} />
+        <FieldError>{errors.profileName}</FieldError>
+      </div>
+      <div>
+        <Label htmlFor="wallet-address" required>Endereço da carteira</Label>
+        <Input id="wallet-address" value={form.address} onChange={(e) => set('address', e.target.value)} placeholder="Endereço 0x da carteira" invalid={Boolean(errors.address)} />
+        <FieldError>{errors.address}</FieldError>
+      </div>
+      <div>
+        <Label htmlFor="wallet-ens-secondary">ENS ou carteira secundária (opcional)</Label>
+        <Input id="wallet-ens-secondary" value={form.ensName} onChange={(e) => set('ensName', e.target.value)} placeholder="ENS ou carteira secundária (opcional)" />
+      </div>
+      <div>
+        <Label htmlFor="wallet-type" required>Tipo de carteira</Label>
+        <Select id="wallet-type" value={form.type} onChange={(e) => set('type', e.target.value as WalletType)} invalid={Boolean(errors.type)}>
+          <option value="">Selecione uma carteira</option>
+          {TYPES.map((item) => <option key={item} value={item}>{WALLET_TYPE_LABELS[item]}</option>)}
+        </Select>
+        <FieldError>{errors.type}</FieldError>
+      </div>
+      <div>
+        <Label htmlFor="wallet-referral" required>Código de indicação</Label>
+        <Input id="wallet-referral" value={form.referralCode} onChange={(e) => set('referralCode', e.target.value)} invalid={Boolean(errors.referralCode)} />
+        <FieldError>{errors.referralCode}</FieldError>
+      </div>
+      <div>
+        <Label htmlFor="wallet-email" required>E-mail</Label>
+        <Input id="wallet-email" type="email" value={form.email} onChange={(e) => set('email', e.target.value)} invalid={Boolean(errors.email)} />
+        <FieldError>{errors.email}</FieldError>
+      </div>
+      <div>
+        <Label htmlFor="wallet-ens" required>Nome ENS</Label>
+        <div className="flex gap-2">
+          <Select aria-label="Sufixo ENS" value=".eth" onChange={() => {}} className="w-20">
+            <option value=".eth">.eth</option>
+          </Select>
+          <Input id="wallet-ens" value={form.ensSuffixName} onChange={(e) => set('ensSuffixName', e.target.value)} invalid={Boolean(errors.ensSuffixName)} />
+        </div>
+        <FieldError>{errors.ensSuffixName}</FieldError>
+      </div>
+    </div>
+  )
+
+  if (isPending) {
+    return (
+      <main className="mx-auto max-w-[1200px] px-4 py-10 sm:px-6 lg:px-[30px]">
+        <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
+          <Skeleton className="hidden h-96 w-full lg:block" />
+          <Skeleton className="h-96 w-full" />
+        </div>
+      </main>
+    )
+  }
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Minhas carteiras</h1>
-          <p className="mt-2 text-sm text-content-muted">
-            Cadastre a principal e as secundárias para usar no pagamento.
-          </p>
-        </div>
-        <Button onClick={openCreate}><Plus className="h-4 w-4" /> Nova carteira</Button>
-      </div>
+    <main className="mx-auto max-w-[1200px] px-4 py-8 sm:px-6 lg:px-[30px]">
+      <div className="grid gap-10 lg:grid-cols-[280px_1fr]">
+        <AccountSidebar active="carteiras" />
 
-      {isPending ? (
-        <div className="mt-8 space-y-4">
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-24 w-full" />
-        </div>
-      ) : (
-        <ul className="mt-8 space-y-4">
-          {(wallets ?? []).map((wallet) => (
-            <li key={wallet.id}>
-              <Card>
-                <CardContent className="flex flex-wrap items-center gap-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-coffee text-accent">
-                    <span className="text-lg font-bold">{wallet.label.slice(0, 1).toUpperCase()}</span>
-                  </div>
+        <section aria-labelledby="wallets-title">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h1 id="wallets-title" className="text-sm font-bold tracking-wide">Carteira principal</h1>
+              <p className="mt-2 text-[11px] text-content-muted">
+                Estas carteiras ficam disponíveis no pagamento e para receber NFTs comprados.
+              </p>
+            </div>
+            <button type="button" onClick={openCreate} className="text-xs font-bold text-accent hover:underline">
+              Adicionar
+            </button>
+          </div>
+
+          <form onSubmit={submit} noValidate className="mt-6">
+            {fields}
+            <Button type="submit" className="mt-8" disabled={create.isPending || update.isPending}>
+              {create.isPending || update.isPending ? 'Salvando…' : editing ? 'Salvar carteira' : 'Salvar carteira'}
+            </Button>
+            {editing && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingId(null)
+                  setCreating(false)
+                }}
+                className="ml-4 text-xs text-content-muted hover:text-danger"
+              >
+                Cancelar edição
+              </button>
+            )}
+          </form>
+
+          <div className="mt-12 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="text-sm font-bold tracking-wide">Carteira secundária</h2>
+              <p className="mt-2 text-[11px] text-content-muted">
+                {secondaries.length
+                  ? `${secondaries.length} carteira(s) secundária(s) cadastrada(s).`
+                  : 'Você ainda não adicionou uma carteira secundária.'}
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-2 text-[11px]">
+                <input
+                  type="checkbox"
+                  checked={sameAsPrimary}
+                  onChange={(e) => setSameAsPrimary(e.target.checked)}
+                  className="h-4 w-4 accent-accent"
+                />
+                Igual à carteira principal
+              </label>
+              <button type="button" onClick={openCreate} className="text-xs font-bold text-accent hover:underline">
+                Adicionar
+              </button>
+            </div>
+          </div>
+
+          {secondaries.length > 0 && (
+            <ul className="mt-5 space-y-3">
+              {secondaries.map((wallet) => (
+                <li key={wallet.id} className="flex flex-wrap items-center gap-4 rounded-md border border-line bg-surface p-4">
                   <div className="min-w-0 flex-1">
-                    <p className="flex items-center gap-2 text-sm font-bold">
-                      {wallet.label}
-                      {wallet.isPrimary && (
-                        <span className="rounded-sm bg-accent px-2 py-0.5 text-[10px] font-bold text-ink uppercase">
-                          Principal
-                        </span>
-                      )}
-                    </p>
-                    <p className="mt-1 truncate font-mono text-xs text-content-subtle">{wallet.address}</p>
-                    <p className="mt-1 text-[11px] text-content-muted">
+                    <p className="text-xs font-bold">{wallet.label}</p>
+                    <p className="mt-1 truncate font-mono text-[10px] text-content-subtle">{wallet.address}</p>
+                    <p className="mt-1 text-[10px] text-content-muted">
                       {wallet.network} · {WALLET_TYPE_LABELS[wallet.type]}
-                      {wallet.ensName ? ` · ${wallet.ensName}` : ''}
                     </p>
                   </div>
                   <Button variant="secondary" size="sm" onClick={() => openEdit(wallet)}>
-                    <Pencil className="h-3 w-3" /> Editar
+                    Editar
                   </Button>
-                </CardContent>
-              </Card>
-            </li>
-          ))}
-          {(wallets ?? []).length === 0 && (
-            <li className="rounded-md border border-line bg-surface p-10 text-center text-sm text-content-muted">
-              Nenhuma carteira cadastrada.
-            </li>
+                </li>
+              ))}
+            </ul>
           )}
-        </ul>
-      )}
 
-      <Dialog
-        open={open}
-        onOpenChange={setOpen}
-        title={editing ? 'Editar carteira' : 'Nova carteira'}
-        description="Endereços são validados antes de salvar."
-      >
-        <form onSubmit={submit} className="space-y-4">
-          <div>
-            <Label htmlFor="wallet-label" required>Apelido</Label>
-            <Input id="wallet-label" value={label} onChange={(e) => setLabel(e.target.value)} invalid={Boolean(error?.fieldErrors?.label)} />
-            <FieldError>{error?.fieldErrors?.label}</FieldError>
-          </div>
-          <div>
-            <Label htmlFor="wallet-address-form" required>Endereço</Label>
-            <Input id="wallet-address-form" value={address} onChange={(e) => setAddress(e.target.value)} placeholder="0x…" invalid={Boolean(error?.fieldErrors?.address)} />
-            <FieldError>{error?.fieldErrors?.address}</FieldError>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="wallet-network">Rede</Label>
-              <Select id="wallet-network" value={network} onChange={(e) => setNetwork(e.target.value as Network)}>
-                {NETWORKS.map((item) => <option key={item} value={item}>{item}</option>)}
-              </Select>
+          {formOpen && (
+            <div className="mt-6 rounded-md border border-accent-muted bg-surface p-5">
+              <h3 className="text-xs font-bold tracking-wide">
+                {editing ? `Editar ${editing.label}` : 'Nova carteira secundária'}
+              </h3>
+              <form onSubmit={submit} noValidate className="mt-5">
+                {fields}
+                <div className="mt-6 flex gap-3">
+                  <Button type="submit" disabled={create.isPending || update.isPending}>
+                    Salvar carteira
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => {
+                      setCreating(false)
+                      setEditingId(null)
+                    }}
+                  >
+                    Cancelar
+                  </Button>
+                </div>
+              </form>
             </div>
-            <div>
-              <Label htmlFor="wallet-type-form">Tipo</Label>
-              <Select id="wallet-type-form" value={type} onChange={(e) => setType(e.target.value as WalletType)}>
-                {TYPES.map((item) => <option key={item} value={item}>{WALLET_TYPE_LABELS[item]}</option>)}
-              </Select>
-            </div>
-          </div>
-          <div>
-            <Label htmlFor="wallet-ens">ENS</Label>
-            <Input id="wallet-ens" value={ensName} onChange={(e) => setEnsName(e.target.value)} />
-          </div>
-          <div>
-            <Label htmlFor="wallet-referral">Código de indicação</Label>
-            <Input id="wallet-referral" value={referralCode} onChange={(e) => setReferralCode(e.target.value)} />
-          </div>
-          {error && !error.fieldErrors && (
-            <p role="alert" className="text-xs text-danger">{error.message}</p>
           )}
-          <Button type="submit" full disabled={create.isPending || update.isPending}>
-            Salvar
-          </Button>
-        </form>
-      </Dialog>
+
+          <AccountMobileFooter />
+        </section>
+      </div>
     </main>
   )
 }
