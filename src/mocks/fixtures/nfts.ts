@@ -4,9 +4,10 @@ import type { Network } from '@/contracts/common'
 import { mulberry32 } from '../random'
 
 /**
- * Arte dos NFTs. Os arquivos são recortados das telas do Figma (ver
- * docs/ASSETS.md). Enquanto o recorte não roda, `onError` do componente cai no
- * fundo creme, então nada quebra.
+ * Arte dos NFTs. O Figma não exporta as ilustrações como assets isolados, então
+ * usamos substitutas geradas no mesmo estilo (retratos de colecionador sobre
+ * fundo claro), documentadas em docs/ASSETS.md. As quatro ilustrações se
+ * repetem entre os 32 NFTs, como no próprio frame.
  */
 export const ART_KEYS = [
   'emerald',
@@ -22,6 +23,20 @@ export const ART_KEYS = [
 ] as const
 
 export type ArtKey = (typeof ART_KEYS)[number]
+
+/** Ilustração efetiva de cada chave de arte (substitutas documentadas). */
+export const ART_IMAGES: Record<ArtKey, string> = {
+  emerald: '/assets/nft/ape-sunglasses.png',
+  sage: '/assets/nft/ape-bucket.png',
+  neon: '/assets/nft/chimp-blazer.png',
+  cosmic: '/assets/nft/ape-bucket.png',
+  violet: '/assets/nft/ape-bucket.png',
+  ivory: '/assets/nft/chimp-blazer.png',
+  'golden-beat': '/assets/nft/monkey-headphones.png',
+  'golden-signal': '/assets/nft/monkey-headphones.png',
+  'golden-frequency': '/assets/nft/monkey-headphones.png',
+  onyx: '/assets/nft/chimp-blazer.png',
+}
 
 export const ART_ATTRIBUTES: Record<ArtKey, string[]> = {
   emerald: ['Óculos', 'Esmeralda', 'Raro'],
@@ -145,7 +160,7 @@ export function createNftFixtures(): Nft[] {
       collectionId,
       collectionName: COLLECTION_NAMES[collectionId],
       network,
-      imageUrl: `/assets/nft/${art}.svg`,
+      imageUrl: ART_IMAGES[art],
       compareAtPriceEth: compareAt,
       rarity,
       attributes: ART_ATTRIBUTES[art],

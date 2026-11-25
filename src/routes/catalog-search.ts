@@ -1,6 +1,14 @@
-import { NFT_SORTS, type CollectionId, type NftRarity, type NftSort } from '@/contracts/nft'
+import {
+  NFT_SEGMENTS,
+  NFT_SORTS,
+  type CollectionId,
+  type NftRarity,
+  type NftSegment,
+  type NftSort,
+} from '@/contracts/nft'
 import type { Network } from '@/contracts/common'
 
+/** Estado de busca do catálogo — vira query string e sobrevive a refresh. */
 export interface CatalogSearch {
   q?: string
   collections?: string
@@ -8,7 +16,9 @@ export interface CatalogSearch {
   rarity?: string
   min?: string
   max?: string
+  tab?: NftSegment
   sort?: NftSort
+  fav?: '1'
   page?: number
 }
 
@@ -18,6 +28,7 @@ function str(value: unknown): string | undefined {
 
 export function validateCatalogSearch(raw: Record<string, unknown>): CatalogSearch {
   const sort = str(raw.sort)
+  const tab = str(raw.tab)
   return {
     q: str(raw.q),
     collections: str(raw.collections),
@@ -25,7 +36,9 @@ export function validateCatalogSearch(raw: Record<string, unknown>): CatalogSear
     rarity: str(raw.rarity),
     min: str(raw.min),
     max: str(raw.max),
+    tab: tab && NFT_SEGMENTS.includes(tab as NftSegment) ? (tab as NftSegment) : undefined,
     sort: sort && NFT_SORTS.includes(sort as NftSort) ? (sort as NftSort) : undefined,
+    fav: raw.fav === '1' ? '1' : undefined,
     page: typeof raw.page === 'number' && raw.page > 0 ? raw.page : undefined,
   }
 }
@@ -38,6 +51,7 @@ export type ParsedCatalogSearch = {
   collections: CollectionId[]
   networks: Network[]
   rarity: NftRarity[]
+  segment: NftSegment
   sort: NftSort
   page: number
 }

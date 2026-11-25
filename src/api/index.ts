@@ -64,6 +64,8 @@ export const api = {
           rarity: query.rarity as string[] | undefined,
           priceMin: query.priceMin,
           priceMax: query.priceMax,
+          segment: query.segment,
+          fav: query.onlyFavorites ? '1' : undefined,
           sort: query.sort,
           page: query.page,
           pageSize: query.pageSize,

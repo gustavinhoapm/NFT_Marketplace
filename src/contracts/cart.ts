@@ -20,6 +20,8 @@ export interface CartTotals {
 export interface CartItem {
   id: string
   nftId: string
+  /** Token exibível ("#0042"), como no frame do carrinho. */
+  tokenId: string
   editionId: string
   name: string
   imageUrl: string

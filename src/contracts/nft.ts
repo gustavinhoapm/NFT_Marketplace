@@ -39,6 +39,17 @@ export const NFT_SORTS = ['recent', 'price-asc', 'price-desc', 'popular'] as con
 
 export type NftSort = (typeof NFT_SORTS)[number]
 
+/** Abas do catálogo no layout do Figma ("Todos os NFTs / Novos / Em alta"). */
+export const NFT_SEGMENTS = ['all', 'new', 'hot'] as const
+
+export type NftSegment = (typeof NFT_SEGMENTS)[number]
+
+export const NFT_SEGMENT_LABELS: Record<NftSegment, string> = {
+  all: 'Todos os NFTs',
+  new: 'Novos lançamentos',
+  hot: 'Em alta',
+}
+
 export const NFT_SORT_LABELS: Record<NftSort, string> = {
   recent: 'Listados recentemente',
   'price-asc': 'Menor preço',
@@ -103,6 +114,10 @@ export interface NftListQuery {
   rarity?: NftRarity[]
   priceMin?: EthAmount
   priceMax?: EthAmount
+  /** Aba do catálogo ("Todos os NFTs", "Novos lançamentos", "Em alta"). */
+  segment?: NftSegment
+  /** Restringe aos favoritos do usuário autenticado. */
+  onlyFavorites?: boolean
   sort: NftSort
   page: number
   pageSize: number

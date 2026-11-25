@@ -396,6 +396,21 @@ class MockDatabase {
     if (rarities.size) {
       items = items.filter((item) => rarities.has(item.rarity))
     }
+    if (query.onlyFavorites) {
+      items = items.filter((item) => favoriteSet.has(item.id))
+    }
+    if (query.segment === 'new' || query.segment === 'hot') {
+      const newest = all.reduce(
+        (max, nft) => Math.max(max, Date.parse(nft.createdAt)),
+        0,
+      )
+      const cutoff = newest - 60 * 24 * 60 * 60 * 1000
+      items = items.filter((item) =>
+        query.segment === 'new'
+          ? Date.parse(item.createdAt) >= cutoff
+          : item.rating.count >= 20,
+      )
+    }
     if (query.priceMin) {
       items = items.filter(
         (item) => compareEth(item.priceEth, query.priceMin as EthAmount) >= 0,
@@ -929,6 +944,7 @@ class MockDatabase {
       const item: CartItem = {
         id: uid('ci'),
         nftId,
+        tokenId: nft.tokenId,
         editionId,
         name: nft.name,
         imageUrl: nft.imageUrl,

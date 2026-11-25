@@ -1,141 +1,118 @@
 import { Link, useNavigate } from '@tanstack/react-router'
-import { Menu, Search, ShoppingBag } from 'lucide-react'
-import { useState } from 'react'
+import { Search, ShoppingBag, UserRound } from 'lucide-react'
+import { useState, type FormEvent } from 'react'
 
 import { useAuth } from '@/hooks/use-auth'
 import { useCart } from '@/hooks/use-cart'
 import { cn } from '@/lib/utils'
 
+const NAV = [
+  { label: 'Início', to: '/', search: undefined },
+  { label: 'Mercado', to: '/', search: { tab: 'all' as const, page: 1 } },
+  { label: 'Criadores', to: '/em-breve', search: { area: 'criadores' } },
+  { label: 'Aprenda', to: '/em-breve', search: { area: 'aprenda' } },
+] as const
+
+/** Header do frame desktop: logo, nav central, busca, carrinho e entrada. */
 export function SiteHeader({ onAuth }: { onAuth: () => void }) {
   const navigate = useNavigate()
   const { data: cart } = useCart()
   const { user, isAuthenticated } = useAuth()
   const [term, setTerm] = useState('')
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [searchOpen, setSearchOpen] = useState(false)
   const count = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
 
-  function submitSearch(event: React.FormEvent) {
+  function submitSearch(event: FormEvent) {
     event.preventDefault()
-    void navigate({
-      to: '/',
-      search: (previous) => ({ ...previous, q: term, page: 1 }),
-    })
+    void navigate({ to: '/', search: (previous) => ({ ...previous, q: term, page: 1 }) })
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-ink/95 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-[1200px] items-center gap-5 px-4 sm:px-6 lg:px-[30px]">
-        <Link to="/" className="shrink-0 text-xl font-bold tracking-[0.12em] text-content">
-          KURI<span className="text-accent">Ó</span>
+    <header className="sticky top-0 z-40 hidden border-b border-line bg-ink/95 backdrop-blur md:block">
+      <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-8 px-4 sm:px-6 lg:px-[30px]">
+        <Link to="/" className="shrink-0 text-sm font-bold tracking-[0.22em]">
+          KURIO
         </Link>
 
-        <nav aria-label="Navegação principal" className="hidden items-center gap-6 md:flex">
-          <Link to="/" className="text-xs font-bold tracking-wider text-content-muted uppercase hover:text-accent">
-            Explorar
-          </Link>
-          <Link
-            to="/"
-            search={{ collections: 'colecionaveis', page: 1 }}
-            className="text-xs font-bold tracking-wider text-content-muted uppercase hover:text-accent"
-          >
-            Coleções
-          </Link>
-          <Link to="/sobre" className="text-xs font-bold tracking-wider text-content-muted uppercase hover:text-accent">
-            Sobre
-          </Link>
+        <nav aria-label="Navegação principal" className="hidden items-center gap-7 md:flex">
+          {NAV.map((item, index) => (
+            <Link
+              key={item.label}
+              to={item.to}
+              search={item.search ?? {}}
+              className={cn(
+                'border-b-2 pb-1 text-[11px] tracking-wide',
+                index === 0
+                  ? 'border-accent font-bold text-accent'
+                  : 'border-transparent text-content-muted hover:text-content',
+              )}
+            >
+              {item.label}
+            </Link>
+          ))}
         </nav>
 
-        <form onSubmit={submitSearch} className="ml-auto hidden max-w-xs flex-1 md:block">
-          <div className="relative">
-            <Search aria-hidden="true" className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-content-subtle" />
-            <input
-              type="search"
-              value={term}
-              onChange={(event) => setTerm(event.target.value)}
-              placeholder="Buscar NFTs"
-              aria-label="Buscar NFTs"
-              className="h-9 w-full rounded-sm border border-line bg-surface pr-3 pl-9 text-xs placeholder:text-content-subtle focus:border-accent focus:outline-none"
-            />
-          </div>
-        </form>
+        <div className="ml-auto flex items-center gap-4">
+          <form onSubmit={submitSearch} className="hidden items-center md:flex">
+            <label htmlFor="header-search" className="sr-only">Buscar NFTs</label>
+            <div className="relative">
+              <Search aria-hidden="true" className="pointer-events-none absolute top-1/2 left-0 h-4 w-4 -translate-y-1/2 text-content-muted" />
+              <input
+                id="header-search"
+                type="search"
+                value={term}
+                onFocus={() => setSearchOpen(true)}
+                onBlur={() => setSearchOpen(false)}
+                onChange={(event) => setTerm(event.target.value)}
+                placeholder={searchOpen ? 'Buscar NFTs' : ''}
+                className={cn(
+                  'h-8 border-b border-transparent bg-transparent pl-6 text-xs transition-all placeholder:text-content-subtle focus:border-accent focus:outline-none',
+                  searchOpen || term ? 'w-44' : 'w-6',
+                )}
+              />
+            </div>
+          </form>
+          <button
+            type="button"
+            aria-label="Abrir busca"
+            onClick={() => setSearchOpen(true)}
+            className="text-content-muted hover:text-content md:hidden"
+          >
+            <Search className="h-4 w-4" />
+          </button>
 
-        <div className="ml-auto flex items-center gap-2 md:ml-0">
+          <Link
+            to="/carrinho"
+            aria-label={`Carrinho com ${count} ${count === 1 ? 'item' : 'itens'}`}
+            className="relative text-content-muted hover:text-content"
+          >
+            <ShoppingBag className="h-4 w-4" />
+            {count > 0 && (
+              <span className="absolute -top-1.5 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold text-ink">
+                {count}
+              </span>
+            )}
+          </Link>
+
           {isAuthenticated ? (
             <Link
               to="/perfil"
-              className="hidden rounded-sm border border-accent px-4 py-2 text-xs font-bold text-accent hover:bg-accent hover:text-ink sm:inline-flex"
+              className="inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-[11px] font-bold text-ink hover:bg-accent-hover"
             >
+              <UserRound aria-hidden="true" className="h-3.5 w-3.5" />
               {user?.displayName?.split(' ')[0] ?? 'Perfil'}
             </Link>
           ) : (
             <button
               type="button"
               onClick={onAuth}
-              className="hidden rounded-sm border border-accent px-4 py-2 text-xs font-bold text-accent hover:bg-accent hover:text-ink sm:inline-flex"
+              className="inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-[11px] font-bold text-ink hover:bg-accent-hover"
             >
+              <UserRound aria-hidden="true" className="h-3.5 w-3.5" />
               Entrar
             </button>
           )}
-
-          <Link
-            to="/carrinho"
-            aria-label={`Carrinho com ${count} ${count === 1 ? 'item' : 'itens'}`}
-            className="relative rounded-sm p-2 text-content hover:text-accent"
-          >
-            <ShoppingBag className="h-5 w-5" />
-            {count > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[10px] font-bold text-ink">
-                {count}
-              </span>
-            )}
-          </Link>
-
-          <button
-            type="button"
-            aria-label="Abrir menu"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((open) => !open)}
-            className="rounded-sm p-2 text-content md:hidden"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
         </div>
-      </div>
-
-      <div
-        className={cn(
-          'border-t border-line bg-surface px-4 py-3 md:hidden',
-          menuOpen ? 'block' : 'hidden',
-        )}
-      >
-        <form onSubmit={submitSearch} className="mb-3">
-          <div className="relative">
-            <Search aria-hidden="true" className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-content-subtle" />
-            <input
-              type="search"
-              value={term}
-              onChange={(event) => setTerm(event.target.value)}
-              placeholder="Buscar NFTs"
-              aria-label="Buscar NFTs"
-              className="h-10 w-full rounded-sm border border-line bg-ink pl-9 text-sm focus:border-accent focus:outline-none"
-            />
-          </div>
-        </form>
-        <nav aria-label="Navegação mobile" className="flex flex-col gap-3 text-sm">
-          <Link to="/" onClick={() => setMenuOpen(false)}>Explorar</Link>
-          <Link to="/perfil" onClick={() => setMenuOpen(false)}>Perfil</Link>
-          <Link to="/carteiras" onClick={() => setMenuOpen(false)}>Carteiras</Link>
-          <Link to="/pedidos" onClick={() => setMenuOpen(false)}>Meus pedidos</Link>
-          {!isAuthenticated && (
-            <Link
-              to="/entrar"
-              search={{ redirect: undefined }}
-              onClick={() => setMenuOpen(false)}
-            >
-              Entrar / Criar conta
-            </Link>
-          )}
-        </nav>
       </div>
     </header>
   )

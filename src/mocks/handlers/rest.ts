@@ -5,8 +5,14 @@ import type {
   UpdateCartItemRequest,
 } from '@/contracts/cart'
 import type { Network } from '@/contracts/common'
-import type { CollectionId, NftListQuery, NftRarity, NftSort } from '@/contracts/nft'
-import { NFT_SORTS } from '@/contracts/nft'
+import type {
+  CollectionId,
+  NftListQuery,
+  NftRarity,
+  NftSegment,
+  NftSort,
+} from '@/contracts/nft'
+import { NFT_SEGMENTS, NFT_SORTS } from '@/contracts/nft'
 import type { CreateOrderRequest, OrderStatus } from '@/contracts/order'
 import type {
   ChangePasswordRequest,
@@ -66,6 +72,12 @@ function nftQuery(request: Request): NftListQuery {
     rarity: csv(url.searchParams.get('rarity')) as NftRarity[],
     priceMin: url.searchParams.get('priceMin') ?? undefined,
     priceMax: url.searchParams.get('priceMax') ?? undefined,
+    segment: NFT_SEGMENTS.includes(
+      (url.searchParams.get('segment') ?? 'all') as NftSegment,
+    )
+      ? (url.searchParams.get('segment') as NftSegment)
+      : 'all',
+    onlyFavorites: url.searchParams.get('fav') === '1',
     sort: rawSort && NFT_SORTS.includes(rawSort) ? rawSort : 'recent',
     page: Number(url.searchParams.get('page') ?? 1),
     pageSize: Number(url.searchParams.get('pageSize') ?? 9),
