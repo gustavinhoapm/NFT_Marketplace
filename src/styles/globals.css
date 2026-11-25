@@ -1,0 +1,80 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens da KURIÓ — extraídos dos PNGs do Figma por amostragem de pixel
+ * e confirmados contra as variáveis do Dev Mode (color/ink = #140D0A).
+ *
+ * Nomenclatura: os nomes finais devem espelhar as variáveis do Figma.
+ * Mapeamento documentado em docs/DESIGN.md.
+ */
+@theme {
+  /* Superfícies */
+  --color-ink: #140d0a;
+  --color-surface: #241612;
+  --color-coffee: #38220f;
+  --color-line: #3f2319;
+
+  /* Acento */
+  --color-accent: #d28a4c;
+  --color-accent-hover: #e89b55;
+  --color-accent-muted: #7e532f;
+
+  /* Conteúdo */
+  --color-content: #f5f1eb;
+  --color-content-muted: #bdb8b3;
+  --color-content-subtle: #847f7a;
+
+  /* Arte */
+  --color-cream: #fdf2da;
+
+  /* Semânticas */
+  --color-danger: #d4574a;
+  --color-success: #7fa650;
+
+  /* Tipografia — família provisória até a confirmação do Dev Mode.
+     O desenho é claramente monoespaçado; trocamos o nome aqui num lugar só. */
+  --font-sans: 'Space Mono', ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+  --font-display: 'Space Mono', ui-monospace, 'Cascadia Mono', 'Consolas', monospace;
+
+  /* Raios */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-ink);
+    color: var(--color-content);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Foco visível obrigatório (requisito U12). Nunca remover sem substituto. */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-ink);
+  }
+}
+
+/* Respeita a preferência do sistema (requisito U10). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

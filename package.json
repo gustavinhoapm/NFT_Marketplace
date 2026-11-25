@@ -1,0 +1,60 @@
+{
+  "name": "nft-marketplace",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -b",
+    "lint": "eslint .",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "lighthouse": "lhci autorun"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^7.0.9",
+    "@tanstack/react-query": "^5.108.4",
+    "@tanstack/react-router": "^1.170.46",
+    "axios": "^1.21.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "decimal.js": "^10.6.0",
+    "lucide-react": "^1.80.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.92.0",
+    "socket.io-client": "^4.8.4",
+    "sonner": "^2.0.8",
+    "tailwind-merge": "^3.7.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "@mswjs/socket.io-binding": "^0.2.0",
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/vite": "^4.3.5",
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^5.2.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
+    "globals": "^16.5.0",
+    "msw": "^2.15.0",
+    "tailwindcss": "^4.3.5",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1",
+    "vite": "^6.4.6"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
+}

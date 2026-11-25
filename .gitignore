@@ -1,0 +1,32 @@
+node_modules/
+dist/
+dist-ssr/
+coverage/
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# Lighthouse CI
+.lighthouseci/
+
+# Local env
+.env
+.env.local
+.env.*.local
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# TS build info
+*.tsbuildinfo
