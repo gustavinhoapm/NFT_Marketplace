@@ -870,20 +870,25 @@ class MockDatabase {
     let subtotal = new Decimal(0)
     let stale = cart.stale
 
+    /**
+     * Itens NÃO somem do carrinho quando preço/estoque mudam: a cotação é
+     * marcada como desatualizada (`stale`) e a interface informa a alteração.
+     * Só remove o que deixou de existir no catálogo. Os totais continuam os
+     * da cotação vigente — é isso que permite ao checkout recusar confirmação
+     * com valores antigos (price_changed/quote_stale).
+     */
     cart.items = cart.items.filter((item) => {
       const nft = this.state.nfts.find((entry) => entry.id === item.nftId)
       const edition = nft?.editions.find((entry) => entry.id === item.editionId)
-      if (!nft || !edition || edition.available <= 0) {
+      if (!nft || !edition) {
         stale = true
         return false
       }
       if (compareEth(item.unitPriceEth, edition.priceEth) !== 0) {
         stale = true
-        return false
       }
       if (item.available !== edition.available) {
         stale = true
-        return false
       }
       subtotal = subtotal.plus(item.lineTotalEth)
       return true

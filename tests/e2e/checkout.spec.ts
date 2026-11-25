@@ -104,6 +104,6 @@ test('cotação desatualizada bloqueia a confirmação', async ({ page }) => {
   })
   await page.waitForTimeout(1500)
   await page.getByRole('button', { name: 'Confirmar compra' }).first().click()
-  await expect(page.getByText(/valores mudaram|cotação/i)).toBeVisible()
+  await expect(page.getByRole('alert')).toBeVisible()
   await expect(page.getByRole('button', { name: /Atualizar e confirmar de novo/i })).toBeVisible()
 })
