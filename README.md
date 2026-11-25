@@ -68,6 +68,7 @@ O reset também restaura a configuração de rede (isolamento entre testes).
 | `npm run test:e2e:ui`       | Playwright em modo UI                        |
 | `npm run lighthouse`        | auditoria mobile (LHCI, 3 medições/página)   |
 | `npm run lighthouse:desktop`| auditoria desktop                            |
+| `npm run lighthouse:summary`| consolida medianas em `docs/lighthouse/RESULTADOS.md` |
 
 Relatório HTML dos testes: `npx playwright show-report`.
 

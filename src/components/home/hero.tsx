@@ -66,6 +66,7 @@ export function Hero({
               <img
                 src={active.imageUrl}
                 alt={`NFT em destaque: ${active.name}`}
+                fetchPriority="high"
                 className="aspect-square w-full object-cover lg:aspect-[5/4]"
               />
             ) : (

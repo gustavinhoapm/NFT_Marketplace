@@ -19,10 +19,12 @@
   --color-accent-hover: #e89b55;
   --color-accent-muted: #7e532f;
 
-  /* Conteúdo */
+  /* Conteúdo. O tom "subtle" foi clareado em relação à amostra do Figma para
+     atingir contraste >= 4.5:1 sobre ink/surface (requisito de acessibilidade;
+     desvio documentado em ARCHITECTURE.md). */
   --color-content: #f5f1eb;
   --color-content-muted: #bdb8b3;
-  --color-content-subtle: #847f7a;
+  --color-content-subtle: #a49d96;
 
   /* Arte */
   --color-cream: #fdf2da;
@@ -64,6 +66,19 @@
   ::selection {
     background-color: var(--color-accent);
     color: var(--color-ink);
+  }
+}
+
+/*
+ * Legibilidade no mobile: o frame usa textos de 9-11px, que reprovam a
+ * auditoria de font-size do Lighthouse. Em telas pequenas elevamos para 12px;
+ * desktop mantém as medidas do Figma. Desvio documentado em ARCHITECTURE.md.
+ */
+@media (max-width: 640px) {
+  .text-\[9px\],
+  .text-\[10px\],
+  .text-\[11px\] {
+    font-size: 12px;
   }
 }
 

@@ -97,6 +97,23 @@ cliente descarta duplicatas e versões antigas antes de tocar o cache.
 - O seletor de edição no detalhe usa chips (frame) em vez de dropdown; a
   quantidade tem limite pelo estoque da edição.
 
+## Acessibilidade e performance: ajustes e justificativas
+
+- **Legibilidade mobile:** os frames usam textos de 9–11px. Em viewports
+  ≤ 640px esses tamanhos são elevados para 12px via CSS (desktop mantém as
+  medidas do Figma), para satisfazer a auditoria de font-size do Lighthouse.
+- **Contraste:** o tom `content-subtle` foi clareado (`#847f7a` → `#a49d96`)
+  para atingir ≥ 4.5:1 sobre `ink`/`surface`.
+- **Back/forward cache:** o service worker do MSW impede bf-cache. É inerente
+  ao mocking na camada de rede em produção de demonstração.
+- **Performance mobile (~0.85–0.9):** o boot precisa aguardar o registro do
+  service worker antes do primeiro request (condição de corrida do MSW); para
+  não deixar a tela em branco, renderizamos uma casca de skeletons com a mesma
+  geometria do conteúdo. Imagens em next-gen (WebP/AVIF) e a remoção do JS não
+  usado dos mocks no boot são melhorias possíveis não realizadas para não
+  alterar o comportamento de demonstração exigido (mocks ativos no build
+  publicado).
+
 ## Limitações conhecidas
 
 - Persistência local limita o tamanho do estado (avatar por URL, não upload).

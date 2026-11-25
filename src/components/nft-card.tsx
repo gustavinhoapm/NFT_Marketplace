@@ -31,9 +31,11 @@ export function NftCard({
         aria-label={`Ver detalhes de ${nft.name}`}
       >
         <div className="relative overflow-hidden rounded-sm bg-cream">
+          {/* Decorativa dentro do link nomeado: o alt duplicado causava
+              label-content-name-mismatch na auditoria. */}
           <img
             src={nft.imageUrl}
-            alt={`Arte de ${nft.name}`}
+            alt=""
             loading="lazy"
             className="aspect-square w-full object-cover transition-transform duration-300 group-hover:scale-105"
           />

@@ -25,7 +25,12 @@ export default defineConfig({
         manualChunks: {
           react: ['react', 'react-dom'],
           tanstack: ['@tanstack/react-query', '@tanstack/react-router'],
-          mocks: ['msw', '@mswjs/socket.io-binding', 'socket.io-client'],
+          /**
+           * socket.io-client NÃO pode entrar neste chunk: ele captura
+           * `globalThis.WebSocket` na avaliação do módulo, e o chunk de mocks
+           * é carregado antes de `worker.start()` patchear o global.
+           */
+          mocks: ['msw', '@mswjs/socket.io-binding'],
         },
       },
     },
