@@ -1,11 +1,9 @@
-import { createRoute, Link } from '@tanstack/react-router'
-import { CheckCircle2, Clock, ExternalLink, XCircle } from 'lucide-react'
-import { toast } from 'sonner'
+import { createRoute, Link, useNavigate } from '@tanstack/react-router'
+import { Clock, Mail, X, XCircle } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { MobileTopBar } from '@/components/layout/mobile-top-bar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ORDER_STATUS_LABELS } from '@/contracts/order'
 import { errorMessage } from '@/lib/api-error'
 import { formatEth } from '@/lib/money'
 import { useOrder } from '@/hooks/use-orders'
@@ -18,15 +16,20 @@ export const confirmationRoute = createRoute({
   component: ConfirmationPage,
 })
 
+/**
+ * Recibo no padrão do frame: card centralizado com selo, meta da transação,
+ * tabela de itens do snapshot e link simulado de explorador. Estados não
+ * desenhados (pendente/recusado) seguem o mesmo padrão visual.
+ */
 function ConfirmationPage() {
   const { orderId } = confirmationRoute.useParams()
+  const navigate = useNavigate()
   const { data: order, isPending, isError, error, refetch } = useOrder(orderId)
 
   if (isPending) {
     return (
-      <main className="mx-auto max-w-3xl px-4 py-16 sm:px-6">
-        <Skeleton className="h-10 w-2/3" />
-        <Skeleton className="mt-8 h-64 w-full" />
+      <main className="mx-auto max-w-2xl px-4 py-16 sm:px-6">
+        <Skeleton className="h-72 w-full rounded-md" />
       </main>
     )
   }
@@ -41,115 +44,129 @@ function ConfirmationPage() {
     )
   }
 
-  return (
-    <main className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
-      <div className="flex flex-col items-center text-center">
-        {order.status === 'pending' && (
-          <>
-            <Clock className="h-14 w-14 animate-pulse text-accent" />
-            <p className="mt-5 text-xs font-bold tracking-[0.28em] text-accent uppercase">
-              Processando
-            </p>
-            <h1 className="mt-3 text-3xl font-bold">Pagamento em andamento</h1>
-            <p className="mt-3 text-sm text-content-muted">
-              Aguardando a confirmação da simulação. Esta página atualiza sozinha — pode
-              recolher a página e voltar depois.
-            </p>
-          </>
-        )}
-        {order.status === 'confirmed' && (
-          <>
-            <CheckCircle2 className="h-14 w-14 text-success" />
-            <p className="mt-5 text-xs font-bold tracking-[0.28em] text-success uppercase">
-              Confirmado
-            </p>
-            <h1 className="mt-3 text-3xl font-bold">Sua compra foi confirmada!</h1>
-            <p className="mt-3 text-sm text-content-muted">
-              As obras abaixo agora fazem parte da sua coleção simulada.
-            </p>
-          </>
-        )}
-        {order.status === 'declined' && (
-          <>
-            <XCircle className="h-14 w-14 text-danger" />
-            <p className="mt-5 text-xs font-bold tracking-[0.28em] text-danger uppercase">
-              Recusado
-            </p>
-            <h1 className="mt-3 text-3xl font-bold">Pagamento não autorizado</h1>
-            <p className="mt-3 text-sm text-content-muted">
-              {order.failureReason ?? 'A operadora recusou a transação.'} Seus itens continuam
-              no carrinho.
-            </p>
-          </>
-        )}
-      </div>
+  const confirmed = order.status === 'confirmed'
+  const declined = order.status === 'declined'
 
-      <Card className="mt-10">
-        <CardHeader className="flex items-center justify-between">
-          <CardTitle>Resumo do pedido</CardTitle>
-          <span className="font-mono text-xs text-content-subtle">{order.id}</span>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-3 border-b border-line pb-5 text-xs sm:grid-cols-2">
-            <div><p className="text-content-subtle">Status</p><p className="mt-1 font-bold">{ORDER_STATUS_LABELS[order.status]}</p></div>
-            <div><p className="text-content-subtle">Carteira</p><p className="mt-1 font-bold">{order.walletLabel} · {order.walletAddress.slice(0, 12)}…</p></div>
-            <div><p className="text-content-subtle">Rede</p><p className="mt-1 font-bold">{order.network}</p></div>
+  return (
+    <>
+      <MobileTopBar title="Confirmação de pedido" />
+      <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:py-16">
+        <section
+          aria-labelledby="receipt-title"
+          className="relative overflow-hidden rounded-md border border-line bg-surface"
+        >
+          <button
+            type="button"
+            aria-label="Fechar recibo e voltar ao início"
+            onClick={() => void navigate({ to: '/' })}
+            className="absolute top-4 right-4 text-content-muted hover:text-content"
+          >
+            <X className="h-4 w-4" />
+          </button>
+
+          <div className="px-6 pt-10 pb-6 text-center">
+            {confirmed && <Mail aria-hidden="true" className="mx-auto h-14 w-14 text-accent" />}
+            {order.status === 'pending' && (
+              <Clock aria-hidden="true" className="mx-auto h-14 w-14 animate-pulse text-accent" />
+            )}
+            {declined && <XCircle aria-hidden="true" className="mx-auto h-14 w-14 text-danger" />}
+            <h1 id="receipt-title" className="mt-5 text-sm font-bold tracking-wide">
+              {confirmed && 'Seus NFTs agora estão na sua carteira'}
+              {order.status === 'pending' && 'Pagamento em andamento: esta página atualiza sozinha'}
+              {declined && (order.failureReason ?? 'Pagamento não autorizado')}
+            </h1>
+          </div>
+
+          <dl className="grid grid-cols-2 gap-y-4 border-y border-line px-6 py-4 text-[11px] sm:grid-cols-4">
             <div>
-              <p className="text-content-subtle">Transação</p>
-              {order.transactionHash ? (
+              <dt className="font-bold">ID da transação</dt>
+              <dd className="mt-1 text-content-muted">
+                {order.transactionHash ? `${order.transactionHash.slice(0, 6)}…${order.transactionHash.slice(-4)}` : 'Aguardando…'}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-bold">Data</dt>
+              <dd className="mt-1 text-content-muted">
+                {new Date(order.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-bold">Total</dt>
+              <dd className="mt-1 text-content-muted">{formatEth(order.totals.totalEth)} ETH</dd>
+            </div>
+            <div>
+              <dt className="font-bold">Carteira</dt>
+              <dd className="mt-1 text-content-muted">{order.walletLabel}</dd>
+            </div>
+          </dl>
+
+          <div className="px-6 py-6">
+            <h2 className="text-xs font-bold">Detalhes da transação</h2>
+            <div className="mt-4 grid grid-cols-[1fr_auto_auto] gap-4 border-b border-line pb-2 text-xs font-bold">
+              <span>NFTs</span>
+              <span>Edições</span>
+              <span>Subtotal</span>
+            </div>
+            <ul className="mt-4 space-y-4">
+              {order.items.map((item) => (
+                <li key={`${item.nftId}-${item.editionId}`} className="grid grid-cols-[1fr_auto_auto] items-center gap-4">
+                  <span className="flex min-w-0 items-center gap-3">
+                    <img src={item.imageUrl} alt="" className="h-12 w-12 rounded-sm object-cover" />
+                    <span className="min-w-0">
+                      <span className="block truncate text-xs font-bold">{item.name}</span>
+                      <span className="block text-[10px] text-content-subtle">ID do token: {item.tokenId}</span>
+                    </span>
+                  </span>
+                  <span className="text-[11px] text-content-muted">(x {item.quantity})</span>
+                  <span className="text-xs font-bold text-accent">{formatEth(item.lineTotalEth)} ETH</span>
+                </li>
+              ))}
+            </ul>
+
+            <dl className="mt-6 space-y-2 text-xs">
+              <div className="flex justify-between">
+                <dt className="text-content-muted">Taxa de rede</dt>
+                <dd>{formatEth(order.totals.networkFeeEth)} ETH</dd>
+              </div>
+              <div className="flex justify-between border-t border-line pt-3 text-sm font-bold">
+                <dt>Total</dt>
+                <dd className="text-accent">{formatEth(order.totals.totalEth)} ETH</dd>
+              </div>
+            </dl>
+
+            <p className="mt-6 text-center text-[11px] leading-relaxed text-content-muted">
+              {confirmed
+                ? `Transação confirmada na rede ${order.network}. A propriedade foi transferida para sua carteira conectada e registrada na rede.`
+                : declined
+                  ? 'Nenhum valor foi cobrado. Seus itens continuam no carrinho.'
+                  : 'Aguardando a confirmação da simulação. Você pode recarregar a página: o pedido é recuperado pelo mesmo identificador.'}
+            </p>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              {confirmed && order.explorerUrl && (
                 <a
-                  href={order.explorerUrl ?? '#'}
+                  href={order.explorerUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-1 inline-flex items-center gap-1 font-bold text-accent hover:underline"
+                  className="rounded-sm bg-accent px-6 py-3 text-xs font-bold text-ink hover:bg-accent-hover"
                 >
-                  {order.transactionHash.slice(0, 14)}… <ExternalLink className="h-3 w-3" />
+                  Ver no Etherscan
                 </a>
-              ) : (
-                <p className="mt-1 font-bold text-content-subtle">Aguardando…</p>
               )}
+              {declined && (
+                <Link to="/carrinho" className="rounded-sm bg-accent px-6 py-3 text-xs font-bold text-ink hover:bg-accent-hover">
+                  Tentar novamente
+                </Link>
+              )}
+              <Link to="/" className="rounded-sm border border-line px-6 py-3 text-xs font-bold text-content-muted hover:border-accent hover:text-accent">
+                Voltar ao catálogo
+              </Link>
             </div>
           </div>
 
-          <ul className="mt-5 space-y-3">
-            {order.items.map((item) => (
-              <li key={`${item.nftId}-${item.editionId}`} className="flex items-center gap-3">
-                <img src={item.imageUrl} alt="" className="h-12 w-12 rounded-sm object-cover" />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-xs font-bold">{item.name}</p>
-                  <p className="text-[10px] text-content-subtle">Edição {item.editionLabel} · ×{item.quantity}</p>
-                </div>
-                <p className="text-xs font-bold text-accent">{formatEth(item.lineTotalEth)} ETH</p>
-              </li>
-            ))}
-          </ul>
-
-          <dl className="mt-5 space-y-2 border-t border-line pt-5 text-xs">
-            <div className="flex justify-between"><dt className="text-content-muted">Subtotal</dt><dd>{formatEth(order.totals.subtotalEth)} ETH</dd></div>
-            <div className="flex justify-between"><dt className="text-content-muted">Desconto</dt><dd>-{formatEth(order.totals.discountEth)} ETH</dd></div>
-            <div className="flex justify-between"><dt className="text-content-muted">Taxa de rede</dt><dd>{formatEth(order.totals.networkFeeEth)} ETH</dd></div>
-            <div className="flex justify-between border-t border-line pt-3 text-sm font-bold">
-              <dt>Total</dt><dd className="text-accent">{formatEth(order.totals.totalEth)} ETH</dd>
-            </div>
-          </dl>
-        </CardContent>
-      </Card>
-
-      <div className="mt-6 flex flex-wrap justify-center gap-3">
-        <Button
-          variant="secondary"
-          onClick={() =>
-            void refetch().then(() => toast.info('Status verificado novamente.'))
-          }
-        >
-          Verificar status
-        </Button>
-        {order.status === 'declined' ? (
-          <Link to="/carrinho"><Button>Tentar novamente</Button></Link>
-        ) : (
-          <Link to="/"><Button>Voltar ao catálogo</Button></Link>
-        )}
-      </div>
-    </main>
+          <div aria-hidden="true" className="h-1.5 bg-accent" />
+        </section>
+      </main>
+    </>
   )
 }

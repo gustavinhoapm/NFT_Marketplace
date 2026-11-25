@@ -24,18 +24,21 @@ export const ART_KEYS = [
 
 export type ArtKey = (typeof ART_KEYS)[number]
 
-/** Ilustração efetiva de cada chave de arte (substitutas documentadas). */
+/**
+ * Ilustração efetiva de cada chave de arte (substitutas documentadas em
+ * docs/ASSETS.md). JPEG 640px (~45 KB) para manter LCP/CLS saudáveis.
+ */
 export const ART_IMAGES: Record<ArtKey, string> = {
-  emerald: '/assets/nft/ape-sunglasses.png',
-  sage: '/assets/nft/ape-bucket.png',
-  neon: '/assets/nft/chimp-blazer.png',
-  cosmic: '/assets/nft/ape-bucket.png',
-  violet: '/assets/nft/ape-bucket.png',
-  ivory: '/assets/nft/chimp-blazer.png',
-  'golden-beat': '/assets/nft/monkey-headphones.png',
-  'golden-signal': '/assets/nft/monkey-headphones.png',
-  'golden-frequency': '/assets/nft/monkey-headphones.png',
-  onyx: '/assets/nft/chimp-blazer.png',
+  emerald: '/assets/nft/ape-sunglasses.jpg',
+  sage: '/assets/nft/ape-bucket.jpg',
+  neon: '/assets/nft/chimp-blazer.jpg',
+  cosmic: '/assets/nft/ape-bucket.jpg',
+  violet: '/assets/nft/ape-bucket.jpg',
+  ivory: '/assets/nft/chimp-blazer.jpg',
+  'golden-beat': '/assets/nft/monkey-headphones.jpg',
+  'golden-signal': '/assets/nft/monkey-headphones.jpg',
+  'golden-frequency': '/assets/nft/monkey-headphones.jpg',
+  onyx: '/assets/nft/chimp-blazer.jpg',
 }
 
 export const ART_ATTRIBUTES: Record<ArtKey, string[]> = {

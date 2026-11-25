@@ -8,7 +8,7 @@ import { Link } from '@tanstack/react-router'
 const POSTS = [
   {
     id: 'propriedade',
-    image: '/assets/nft/chimp-blazer.png',
+    image: '/assets/nft/chimp-blazer.jpg',
     date: '12 de setembro',
     read: 'Leitura de 6 min',
     title: 'Como funciona a propriedade de NFTs',
@@ -16,7 +16,7 @@ const POSTS = [
   },
   {
     id: 'artistas',
-    image: '/assets/nft/ape-sunglasses.png',
+    image: '/assets/nft/ape-sunglasses.jpg',
     date: '13 de setembro',
     read: 'Leitura de 2 min',
     title: '10 artistas digitais para acompanhar',
@@ -24,7 +24,7 @@ const POSTS = [
   },
   {
     id: 'raridade',
-    image: '/assets/nft/ape-bucket.png',
+    image: '/assets/nft/ape-bucket.jpg',
     date: '15 de setembro',
     read: 'Leitura de 3 min',
     title: 'Raridade, atributos e procedência',
@@ -32,7 +32,7 @@ const POSTS = [
   },
   {
     id: 'carteira',
-    image: '/assets/nft/monkey-headphones.png',
+    image: '/assets/nft/monkey-headphones.jpg',
     date: '15 de setembro',
     read: 'Leitura de 2 min',
     title: 'Como proteger sua carteira',

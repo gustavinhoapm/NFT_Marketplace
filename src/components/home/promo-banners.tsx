@@ -5,14 +5,14 @@ import { ArrowRight } from 'lucide-react'
 const BANNERS = [
   {
     id: 'genesis',
-    image: '/assets/nft/ape-sunglasses.png',
+    image: '/assets/nft/ape-sunglasses.jpg',
     title: 'Lançamentos gênesis de edição limitada',
     text: 'Colecione edições escassas diretamente dos criadores antes da revelação pública.',
     search: { collections: 'generativa', tab: 'new' as const, page: 1 },
   },
   {
     id: 'selecao',
-    image: '/assets/nft/chimp-blazer.png',
+    image: '/assets/nft/chimp-blazer.jpg',
     title: 'Arte digital selecionada e muito mais',
     text: 'Explore novos artistas, coleções verificadas e obras digitais que definem a cultura digital.',
     search: { collections: 'arte-digital', page: 1 },
