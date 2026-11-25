@@ -1,5 +1,12 @@
 import { expect, test } from '@playwright/test'
 
+test('login social simulado autentica conta de demonstração', async ({ page }) => {
+  await page.goto('/entrar')
+  await page.getByRole('button', { name: 'Continuar com Google' }).click()
+  await expect(page).toHaveURL('/')
+  await expect(page.getByRole('link', { name: /Gustavo/i }).first()).toBeVisible()
+})
+
 test('logout limpa o nome no header e os dados privados', async ({ page }) => {
   await page.goto('/entrar')
   await page.getByLabel(/^E-mail/).fill('gustavo@kurio.test')

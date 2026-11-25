@@ -10,7 +10,7 @@ publicado.
 
 ```bash
 npm install
-npm run dev          # http://localhost:5173 (porta fixa; strictPort)
+npm run dev          # http://localhost:5173 (porta padrão do Vite)
 ```
 
 Requisitos: Node >= 20.9. O worker do MSW (`public/mockServiceWorker.js`) já

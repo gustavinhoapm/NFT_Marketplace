@@ -1,13 +1,24 @@
 import { Eye, EyeOff } from 'lucide-react'
 import { useState, type FormEvent } from 'react'
+import { toast } from 'sonner'
 
 import { useLogin, useRegister } from '@/hooks/use-auth'
-import { ApiError } from '@/lib/api-error'
+import { ApiError, errorMessage } from '@/lib/api-error'
 
 import { Button } from './ui/button'
 import { FieldError } from './ui/label'
 
 export type AuthMode = 'login' | 'register'
+
+/**
+ * Provedores sociais do frame. OAuth real está fora do escopo; a camada de
+ * mocks simula o provedor autenticando uma conta de demonstração (decisão
+ * documentada em ARCHITECTURE.md).
+ */
+const SOCIAL_PROVIDERS = [
+  { provider: 'Google', email: 'gustavo@kurio.test', password: 'kurio1234' },
+  { provider: 'Facebook', email: 'nova@kurio.test', password: 'ape4567' },
+] as const
 
 /**
  * Formulário de autenticação no padrão dos frames: inputs com placeholder
@@ -29,6 +40,7 @@ export function AuthForm({
   const [username, setUsername] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [notice, setNotice] = useState<string | null>(null)
+  const [socialPending, setSocialPending] = useState<string | null>(null)
   const error =
     (login.error instanceof ApiError ? login.error : null) ??
     (register.error instanceof ApiError ? register.error : null)
@@ -130,17 +142,37 @@ export function AuthForm({
       </div>
 
       <div className="space-y-3">
-        {['Google', 'Facebook'].map((provider) => (
+        {SOCIAL_PROVIDERS.map(({ provider, email, password }) => (
           <button
             key={provider}
             type="button"
-            onClick={() => setNotice(`Login com ${provider} não faz parte desta demonstração.`)}
-            className="flex h-11 w-full items-center justify-center gap-3 rounded-sm border border-line text-xs hover:border-accent-muted"
+            disabled={socialPending === provider || isPending}
+            onClick={() => {
+              setSocialPending(provider)
+              setNotice(null)
+              // OAuth real está fora do escopo: o provedor é simulado pela
+              // camada de mocks e entra com uma conta de demonstração.
+              login.mutate(
+                { email, password },
+                {
+                  onSuccess: () => {
+                    setSocialPending(null)
+                    toast.success(`Sessão simulada via ${provider}.`)
+                    onSuccess?.()
+                  },
+                  onError: (failure) => {
+                    setSocialPending(null)
+                    toast.error(errorMessage(failure))
+                  },
+                },
+              )
+            }}
+            className="flex h-11 w-full items-center justify-center gap-3 rounded-sm border border-line text-xs hover:border-accent-muted disabled:opacity-60"
           >
             <span aria-hidden="true" className="font-bold text-accent">
               {provider === 'Google' ? 'G' : 'f'}
             </span>
-            Continuar com {provider}
+            {socialPending === provider ? `Conectando com ${provider}…` : `Continuar com ${provider}`}
           </button>
         ))}
       </div>

@@ -88,8 +88,11 @@ cliente descarta duplicatas e versões antigas antes de tocar o cache.
   entrega: links levam a `/em-breve?area=...`, que declara o fora de escopo sem
   aparentar sucesso. O "Diário da Cunhagem" e a newsletter do footer são
   visuais; a newsletter informa que não envia dados.
-- Login social e recuperação de senha aparecem nos frames e informam que não
-  fazem parte da demonstração.
+- Login social: os botões "Continuar com Google/Facebook" do frame não fazem
+  OAuth real (fora do escopo); a camada de mocks **simula o provedor**
+  autenticando uma conta de demonstração (Google → gustavo@, Facebook → nova@),
+  com feedback explícito de que a sessão é simulada. Recuperação de senha
+  continua informativa (não faz parte da entrega).
 - No desktop o login é modal (frame); `/entrar` e `/cadastro` existem como
   páginas (frames mobile) e para acesso direto/redirects.
 - Ícones de marca e ilustrações dos NFTs são substituições documentadas em
