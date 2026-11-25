@@ -38,7 +38,8 @@ export function validateCatalogSearch(raw: Record<string, unknown>): CatalogSear
     max: str(raw.max),
     tab: tab && NFT_SEGMENTS.includes(tab as NftSegment) ? (tab as NftSegment) : undefined,
     sort: sort && NFT_SORTS.includes(sort as NftSort) ? (sort as NftSort) : undefined,
-    fav: raw.fav === '1' ? '1' : undefined,
+    // O parser de search do Router JSON-parseia valores ("1" vira 1).
+    fav: raw.fav === 1 || raw.fav === '1' || raw.fav === true ? '1' : undefined,
     page: typeof raw.page === 'number' && raw.page > 0 ? raw.page : undefined,
   }
 }

@@ -315,6 +315,9 @@ class MockDatabase {
     for (const timer of this.orderTimers.values()) clearTimeout(timer)
     this.orderTimers.clear()
     this.state = seed()
+    // Reset restaura o cenário conhecido POR COMPLETO, incluindo a
+    // configuração de rede/falhas (isolamento entre testes e demonstrações).
+    setConfig({ ...DEFAULT_CONFIG })
     this.persist()
   }
 
@@ -456,14 +459,14 @@ class MockDatabase {
         })),
         priceRange: { minEth, maxEth },
       },
-      appliedPriceRange: {
-        minEth: prices.length
-          ? Decimal.min(...items.map((item) => toDecimal(item.priceEth))).toFixed()
-          : '0',
-        maxEth: prices.length
-          ? Decimal.max(...items.map((item) => toDecimal(item.priceEth))).toFixed()
-          : '0',
-      },
+      appliedPriceRange: (() => {
+        // O guard é sobre a lista FILTRADA: spread vazio quebraria o Decimal.
+        const filteredPrices = items.map((item) => toDecimal(item.priceEth))
+        return {
+          minEth: filteredPrices.length ? Decimal.min(...filteredPrices).toFixed() : '0',
+          maxEth: filteredPrices.length ? Decimal.max(...filteredPrices).toFixed() : '0',
+        }
+      })(),
     }
   }
 

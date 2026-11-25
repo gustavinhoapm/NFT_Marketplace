@@ -14,7 +14,8 @@
     "lint": "eslint .",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "lighthouse": "lhci autorun"
+    "lighthouse": "lhci autorun",
+    "lighthouse:desktop": "lhci autorun --config=lighthouserc.desktop.json"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.9",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@lhci/cli": "^0.15.1",
     "@mswjs/socket.io-binding": "^0.2.0",
     "@playwright/test": "^1.65.1",
     "@tailwindcss/vite": "^4.3.5",

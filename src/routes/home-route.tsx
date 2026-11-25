@@ -59,7 +59,15 @@ function HomePage() {
 
   function update(patch: Partial<CatalogSearch>) {
     void navigate({
-      search: (previous) => ({ ...previous, ...patch, page: patch.page ?? 1 }),
+      search: (previous) => {
+        const page = patch.page ?? 1
+        return {
+          ...previous,
+          ...patch,
+          // page=1 não polui a URL; filtros novos reiniciam a paginação.
+          page: page > 1 ? page : undefined,
+        }
+      },
     })
   }
 

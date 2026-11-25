@@ -1,6 +1,6 @@
-import { Link, useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
 import { Search, ShoppingBag, UserRound } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 
 import { useAuth } from '@/hooks/use-auth'
 import { useCart } from '@/hooks/use-cart'
@@ -21,6 +21,12 @@ export function SiteHeader({ onAuth }: { onAuth: () => void }) {
   const [term, setTerm] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
   const count = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
+  const searchStr = useRouterState({ select: (state) => state.location.searchStr })
+
+  // A busca também é estado da URL: refresh/histórico restauram o termo.
+  useEffect(() => {
+    setTerm(new URLSearchParams(searchStr).get('q') ?? '')
+  }, [searchStr])
 
   function submitSearch(event: FormEvent) {
     event.preventDefault()
