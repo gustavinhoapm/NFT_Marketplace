@@ -65,10 +65,16 @@ test('pedido só muda de status por evento do servidor', async ({ page }) => {
   await expect(confirm).toBeEnabled({ timeout: 15_000 })
   await confirm.click()
 
-  await expect(page.getByRole('heading', { name: /Pagamento em andamento|Sua compra foi confirmada/i })).toBeVisible()
+  await expect(
+    page.getByRole('heading', {
+      name: /Pagamento em andamento|Seus NFTs agora estão na sua carteira/i,
+    }),
+  ).toBeVisible()
 
   // o status final vem do servidor simulado (socket/polling), nunca do clique
   await expect(
-    page.getByRole('heading', { name: /Sua compra foi confirmada|Pagamento não autorizado/i }),
+    page.getByRole('heading', {
+      name: /Seus NFTs agora estão na sua carteira|Pagamento não autorizado/i,
+    }),
   ).toBeVisible({ timeout: 20_000 })
 })
