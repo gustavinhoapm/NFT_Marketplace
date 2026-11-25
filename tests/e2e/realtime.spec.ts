@@ -60,11 +60,10 @@ test('pedido só muda de status por evento do servidor', async ({ page }) => {
   await page.getByRole('button', { name: 'Comprar', exact: true }).first().click()
   await expect(page).toHaveURL('/pagamento')
 
-  // checkout
-  await page.getByLabel('Carteira cadastrada').selectOption({ index: 1 })
-  await page.getByLabel('Nome completo').fill('Gustavo Teste')
-  await page.getByLabel(/^E-mail/).fill('gustavo@kurio.test')
-  await page.getByRole('button', { name: 'Confirmar compra' }).click()
+  // checkout: carteira primária e dados do perfil já vêm pré-selecionados
+  const confirm = page.getByRole('button', { name: 'Confirmar compra' }).first()
+  await expect(confirm).toBeEnabled({ timeout: 15_000 })
+  await confirm.click()
 
   await expect(page.getByRole('heading', { name: /Pagamento em andamento|Sua compra foi confirmada/i })).toBeVisible()
 

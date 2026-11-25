@@ -4,13 +4,15 @@ import { cn } from '@/lib/utils'
 
 export const Select = forwardRef<
   HTMLSelectElement,
-  SelectHTMLAttributes<HTMLSelectElement>
->(({ className, children, ...props }, ref) => (
+  SelectHTMLAttributes<HTMLSelectElement> & { invalid?: boolean }
+>(({ className, invalid, children, ...props }, ref) => (
   <div className="relative">
     <select
       ref={ref}
+      aria-invalid={invalid || undefined}
       className={cn(
         'h-10 w-full appearance-none rounded-sm border border-line bg-ink px-3 pr-9 text-sm text-content focus:border-accent focus:outline-none',
+        invalid && 'border-danger focus:border-danger',
         className,
       )}
       {...props}
