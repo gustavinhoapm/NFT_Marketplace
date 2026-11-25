@@ -228,7 +228,7 @@ function ProfilePage() {
             <h2 className="mt-10 text-sm font-bold tracking-wide">Alterar senha</h2>
             <div className="mt-5 max-w-md space-y-5">
               <PasswordInput id="current-password" label="Senha atual" value={currentPassword} onChange={setCurrentPassword} error={passwordErrors?.currentPassword} />
-              <PasswordInput id="new-password" label="Nova senha" value={newPassword} onChange={setNewPassword} error={passwordErrors?.newPassword ?? passwordError} />
+              <PasswordInput id="new-password" label="Nova senha" value={newPassword} onChange={setNewPassword} error={passwordErrors?.newPassword} />
               <PasswordInput id="confirm-password" label="Confirmar nova senha" value={confirmPassword} onChange={setConfirmPassword} error={passwordError} />
             </div>
 

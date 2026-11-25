@@ -166,6 +166,8 @@ export interface DbState {
   coupons: CouponRecord[]
   idempotency: Record<string, IdempotencyRecord>
   eventVersions: Record<string, number>
+  /** Posse das carteiras por usuário (persistida; substitui o mapa em memória). */
+  walletOwnership: Record<string, string>
 }
 
 export type RealtimeEvent = NftUpdatedEvent | OrderUpdatedEvent
@@ -196,7 +198,8 @@ function emptyCart(): Cart {
 
 function seed(): DbState {
   return {
-    schema: 1,
+    schema: 2,
+    walletOwnership: { ...SEED_WALLET_OWNERSHIP },
     nfts: createNftFixtures(),
     users: structuredClone(SEED_USERS),
     profiles: structuredClone(SEED_PROFILES),
@@ -307,8 +310,8 @@ class MockDatabase {
 
   constructor() {
     const stored = readStorage<DbState>(DB_KEY)
-    this.state = stored?.schema === 1 ? stored : seed()
-    if (!stored || stored.schema !== 1) this.persist()
+    this.state = stored?.schema === 2 ? stored : seed()
+    if (!stored || stored.schema !== 2) this.persist()
   }
 
   reset(): void {
@@ -670,7 +673,7 @@ class MockDatabase {
     const wallet = this.state.wallets.find(
       (item) => item.address === order.walletAddress,
     )
-    return wallet ? (SEED_WALLET_OWNERSHIP[wallet.id] ?? null) : null
+    return wallet ? (this.state.walletOwnership[wallet.id] ?? null) : null
   }
 
   async changePassword(
@@ -758,13 +761,13 @@ class MockDatabase {
 
   getWallets(userId: string): Wallet[] {
     return this.state.wallets.filter(
-      (wallet) => SEED_WALLET_OWNERSHIP[wallet.id] === userId,
+      (wallet) => this.state.walletOwnership[wallet.id] === userId,
     )
   }
 
   private assertWalletOwner(userId: string, walletId: string): Wallet {
     const wallet = this.state.wallets.find((item) => item.id === walletId)
-    if (!wallet || SEED_WALLET_OWNERSHIP[walletId] !== userId) {
+    if (!wallet || this.state.walletOwnership[walletId] !== userId) {
       throw new DomainError('not_found', 'Carteira não encontrada.')
     }
     return wallet
@@ -810,7 +813,7 @@ class MockDatabase {
       createdAt: now(),
     }
     this.state.wallets.push(wallet)
-    SEED_WALLET_OWNERSHIP[wallet.id] = userId
+    this.state.walletOwnership[wallet.id] = userId
     this.persist()
     return wallet
   }
@@ -1148,7 +1151,7 @@ class MockDatabase {
     }
 
     const wallet = this.state.wallets.find((item) => item.id === request.walletId)
-    if (!wallet || SEED_WALLET_OWNERSHIP[wallet.id] !== userId) {
+    if (!wallet || this.state.walletOwnership[wallet.id] !== userId) {
       throw new DomainError('forbidden', 'Carteira não pertence a esta conta.', {
         walletId: 'Selecione uma carteira sua.',
       })

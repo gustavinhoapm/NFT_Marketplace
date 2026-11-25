@@ -127,6 +127,11 @@ function WalletsPage() {
     })
   }
 
+  /**
+   * Validação local espelha o contrato CreateWalletRequest. Os campos de
+   * perfil (nome/e-mail/ENS) são opcionais aqui: quando preenchidos, são
+   * sincronizados no perfil, mas não bloqueiam o cadastro da carteira.
+   */
   function validate(): Record<string, string> {
     const next: Record<string, string> = {}
     if (!form.label.trim()) next.label = 'Obrigatório'
@@ -134,10 +139,7 @@ function WalletsPage() {
     if (!form.network) next.network = 'Selecione uma rede'
     if (!form.type) next.type = 'Selecione uma carteira'
     if (!form.referralCode.trim()) next.referralCode = 'Obrigatório'
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) next.email = 'E-mail inválido'
-    if (!form.displayName.trim()) next.displayName = 'Obrigatório'
-    if (!form.profileName.trim()) next.profileName = 'Obrigatório'
-    if (!form.ensSuffixName.trim()) next.ensSuffixName = 'Obrigatório'
+    if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) next.email = 'E-mail inválido'
     return next
   }
 
@@ -164,11 +166,16 @@ function WalletsPage() {
       avatarUrl: profile?.avatarUrl ?? null,
     }
 
-    const saveProfile = () =>
-      updateProfile.mutateAsync(profileBody).catch((error) => {
+    const saveProfile = () => {
+      // Só sincroniza o perfil quando os campos de perfil foram informados.
+      if (!form.displayName.trim() || !/^\S+@\S+\.\S+$/.test(form.email)) {
+        return Promise.resolve()
+      }
+      return updateProfile.mutateAsync(profileBody).catch((error) => {
         toast.error(errorMessage(error))
         throw error
       })
+    }
 
     if (editing) {
       update.mutate(
@@ -293,24 +300,19 @@ function WalletsPage() {
             </button>
           </div>
 
-          <form onSubmit={submit} noValidate className="mt-6">
-            {fields}
-            <Button type="submit" className="mt-8" disabled={create.isPending || update.isPending}>
-              {create.isPending || update.isPending ? 'Salvando…' : editing ? 'Salvar carteira' : 'Salvar carteira'}
-            </Button>
-            {editing && (
-              <button
-                type="button"
-                onClick={() => {
-                  setEditingId(null)
-                  setCreating(false)
-                }}
-                className="ml-4 text-xs text-content-muted hover:text-danger"
-              >
-                Cancelar edição
-              </button>
-            )}
-          </form>
+          {formOpen ? (
+            <p className="mt-6 rounded-md border border-line bg-surface p-4 text-[11px] text-content-muted">
+              O formulário abaixo está editando a carteira selecionada. Cancele para voltar aos
+              dados da carteira principal.
+            </p>
+          ) : (
+            <form onSubmit={submit} noValidate className="mt-6">
+              {fields}
+              <Button type="submit" className="mt-8" disabled={create.isPending || update.isPending}>
+                {create.isPending || update.isPending ? 'Salvando…' : 'Salvar carteira'}
+              </Button>
+            </form>
+          )}
 
           <div className="mt-12 flex flex-wrap items-center justify-between gap-4">
             <div>

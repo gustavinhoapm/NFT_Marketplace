@@ -21,6 +21,16 @@ http.interceptors.response.use(undefined, (error: unknown) => {
   if (axios.isAxiosError<ApiErrorBody>(error)) {
     const body = error.response?.data
     const timedOut = error.code === 'ECONNABORTED'
+
+    /**
+     * Sessão expirada durante a navegação: limpa o token local e leva ao
+     * login preservando o contexto para retomada (requisito de conta/sessão).
+     */
+    if (error.response?.status === 401 && !window.location.pathname.startsWith('/entrar')) {
+      window.localStorage.removeItem('kurio:session-token')
+      const context = window.location.pathname + window.location.search
+      window.location.assign(`/entrar?redirect=${encodeURIComponent(context)}`)
+    }
     throw new ApiError(
       body?.code ?? (timedOut ? 'timeout' : 'network_error'),
       body?.message ??
