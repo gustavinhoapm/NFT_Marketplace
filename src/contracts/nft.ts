@@ -64,6 +64,8 @@ export interface Nft {
   collectionName: string
   network: Network
   imageUrl: string
+  /** Preço anterior, quando o item está em promoção. */
+  compareAtPriceEth: EthAmount | null
   rarity: NftRarity
   attributes: string[]
   description: string
