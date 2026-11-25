@@ -34,6 +34,15 @@ interface ConnectedClient {
 
 const connected = new Map<RawClient, ConnectedClient>()
 
+/**
+ * Visão do servidor simulado: quantos clientes Socket.IO estão conectados.
+ * Usado pelos testes sensíveis a tempo sem importar o socket.io-client aqui
+ * (importá-lo cedo demais capturaria o WebSocket nativo antes do patch do MSW).
+ */
+export function socketConnections(): number {
+  return connected.size
+}
+
 export const socketHandler = socketLink.addEventListener('connection', (connection) => {
   const { client } = connection
   const io = toSocketIo(connection)

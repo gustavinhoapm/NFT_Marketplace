@@ -8,6 +8,13 @@ async function waitForMocks(page: import('@playwright/test').Page) {
   await page.waitForFunction(() => Boolean(window.__KURIO__), undefined, { timeout: 15_000 })
 }
 
+/** Cenários sensíveis a tempo: só dispara o evento com o socket conectado. */
+async function waitForSocket(page: import('@playwright/test').Page) {
+  await page.waitForFunction(() => window.__KURIO__.socketConnected(), undefined, {
+    timeout: 15_000,
+  })
+}
+
 test('preço alterado no servidor atualiza o catálogo via socket', async ({ page }) => {
   await page.goto('/')
   const firstCard = page.locator('article').first()
@@ -15,6 +22,7 @@ test('preço alterado no servidor atualiza o catálogo via socket', async ({ pag
   await waitForMocks(page)
 
   const before = await firstCard.locator('p.text-accent').first().innerText()
+  await waitForSocket(page)
 
   const patched = await page.evaluate(async () => {
     const list = await (await fetch('/api/nfts?page=1&pageSize=1&sort=recent')).json()

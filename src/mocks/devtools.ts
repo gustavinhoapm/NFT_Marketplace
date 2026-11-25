@@ -4,6 +4,7 @@ import type { NftUpdatedPayload } from '@/contracts/realtime'
 import { queryClient } from '@/lib/query-client'
 
 import { worker } from './browser'
+import { socketConnections } from './handlers/socket'
 import { db, getConfig, setConfig, type MockConfig, type RealtimeEvent } from './db'
 
 export interface KurioDevtools {
@@ -26,6 +27,8 @@ export interface KurioDevtools {
   handlers(): Array<{ kind: string; header: string }>
   /** Snapshot do cache do TanStack Query (diagnóstico de isolamento/chaves). */
   cache(): Array<{ key: unknown; status: string; hasData: boolean }>
+  /** Estado da conexão Socket.IO do cliente (testes sensíveis a tempo). */
+  socketConnected(): boolean
 }
 
 declare global {
@@ -69,5 +72,6 @@ export function installDevtools(): void {
         status: query.state.status,
         hasData: query.state.data !== undefined,
       })),
+    socketConnected: () => socketConnections() > 0,
   }
 }
