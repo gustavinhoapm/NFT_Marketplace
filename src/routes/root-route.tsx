@@ -11,9 +11,20 @@ export const rootRoute = createRootRoute({
       <p className="mt-3 text-sm text-content-muted">
         O endereço que você tentou acessar não existe nesta demonstração.
       </p>
-      <Link to="/" className="mt-6 rounded-sm bg-accent px-6 py-3 text-sm font-bold text-ink">
-        Voltar ao início
-      </Link>
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <Link to="/" className="rounded-sm bg-accent px-6 py-3 text-sm font-bold text-ink">
+          Voltar ao início
+        </Link>
+        {/* Saída de emergência para aba com grafo de módulos/service worker
+            envelhecido após muitos hot-reloads: recarrega o app por completo. */}
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          className="rounded-sm border border-accent px-6 py-3 text-sm font-bold text-accent hover:bg-accent hover:text-ink"
+        >
+          Recarregar aplicativo
+        </button>
+      </div>
     </main>
   ),
 })
