@@ -214,7 +214,7 @@ function CartPage() {
                           {item.name}
                         </Link>
                         <p className="mt-1 text-[10px] text-content-subtle">ID do token: {item.tokenId}</p>
-                        <p className="mt-1 text-[10px] text-content-subtle lg:hidden">Edição: {item.editionLabel}</p>
+                        <p className="mt-1 text-[10px] text-content-subtle">Edição: {item.editionLabel}</p>
                         <p className="mt-2 text-xs font-bold text-accent lg:hidden">
                           {formatEth(item.lineTotalEth)} ETH
                         </p>
