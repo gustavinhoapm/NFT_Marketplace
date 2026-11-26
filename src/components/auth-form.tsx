@@ -7,6 +7,7 @@ import { ApiError, errorMessage } from '@/lib/api-error'
 
 import { Button } from './ui/button'
 import { FieldError } from './ui/label'
+import { FacebookBrandIcon, GoogleBrandIcon } from './ui/social-icons'
 
 export type AuthMode = 'login' | 'register'
 
@@ -39,6 +40,8 @@ export function AuthForm({
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [confirmError, setConfirmError] = useState<string | undefined>()
   const [notice, setNotice] = useState<string | null>(null)
   const [socialPending, setSocialPending] = useState<string | null>(null)
   const error =
@@ -49,6 +52,11 @@ export function AuthForm({
   function submit(event: FormEvent) {
     event.preventDefault()
     setNotice(null)
+    if (mode === 'register' && confirmPassword !== password) {
+      setConfirmError('A confirmação não confere com a senha.')
+      return
+    }
+    setConfirmError(undefined)
     const options = { onSuccess: () => onSuccess?.() }
     if (mode === 'login') login.mutate({ email, password }, options)
     else register.mutate({ username, email, password }, options)
@@ -63,7 +71,7 @@ export function AuthForm({
             id="auth-username"
             value={username}
             onChange={(event) => setUsername(event.target.value)}
-            placeholder="usuario"
+            placeholder="Nome de usuário"
             autoComplete="username"
             aria-invalid={Boolean(error?.fieldErrors?.username) || undefined}
             className="h-12 w-full rounded-sm border border-line bg-ink px-4 text-sm placeholder:text-content-subtle focus:border-accent focus:outline-none"
@@ -79,7 +87,7 @@ export function AuthForm({
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          placeholder="contato@email.com"
+          placeholder={mode === 'login' ? 'contato@email.com' : 'Digite seu e-mail'}
           autoComplete="email"
           aria-invalid={Boolean(error?.fieldErrors?.email) || undefined}
           className="h-12 w-full rounded-sm border border-line bg-ink px-4 text-sm placeholder:text-content-subtle focus:border-accent focus:outline-none"
@@ -95,7 +103,7 @@ export function AuthForm({
             type={showPassword ? 'text' : 'password'}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            placeholder="************"
+            placeholder={mode === 'login' ? '************' : 'Senha'}
             autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
             aria-invalid={Boolean(error?.fieldErrors?.password) || undefined}
             className="h-12 w-full rounded-sm border border-line bg-ink px-4 pr-12 text-sm placeholder:text-content-subtle focus:border-accent focus:outline-none"
@@ -111,6 +119,23 @@ export function AuthForm({
         </div>
         <FieldError>{error?.fieldErrors?.password}</FieldError>
       </div>
+
+      {mode === 'register' && (
+        <div>
+          <label htmlFor="auth-confirm" className="sr-only">Confirmar senha</label>
+          <input
+            id="auth-confirm"
+            type={showPassword ? 'text' : 'password'}
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            placeholder="Confirmar senha"
+            autoComplete="new-password"
+            aria-invalid={Boolean(confirmError) || undefined}
+            className="h-12 w-full rounded-sm border border-line bg-ink px-4 text-sm placeholder:text-content-subtle focus:border-accent focus:outline-none"
+          />
+          <FieldError>{confirmError}</FieldError>
+        </div>
+      )}
 
       {mode === 'login' && (
         <div className="flex justify-end">
@@ -169,9 +194,11 @@ export function AuthForm({
             }}
             className="flex h-11 w-full items-center justify-center gap-3 rounded-sm border border-line text-xs hover:border-accent-muted disabled:opacity-60"
           >
-            <span aria-hidden="true" className="font-bold text-accent">
-              {provider === 'Google' ? 'G' : 'f'}
-            </span>
+            {provider === 'Google' ? (
+              <GoogleBrandIcon className="h-4 w-4" />
+            ) : (
+              <FacebookBrandIcon className="h-4 w-4" />
+            )}
             {socialPending === provider ? `Conectando com ${provider}…` : `Continuar com ${provider}`}
           </button>
         ))}

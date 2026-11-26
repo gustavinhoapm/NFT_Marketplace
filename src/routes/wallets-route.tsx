@@ -233,8 +233,22 @@ function WalletsPage() {
       </div>
       <div>
         <Label htmlFor="wallet-address" required>Endereço da carteira</Label>
-        <Input id="wallet-address" value={form.address} onChange={(e) => set('address', e.target.value)} placeholder="Endereço 0x da carteira" invalid={Boolean(errors.address)} />
+        <Input id="wallet-address" value={form.address} onChange={(e) => set('address', e.target.value)} placeholder="0x + 40 caracteres hexadecimais" invalid={Boolean(errors.address)} />
         <FieldError>{errors.address}</FieldError>
+        <p className="mt-1.5 text-[10px] text-content-subtle">
+          Formato Ethereum: <code>0x</code> seguido de 40 caracteres hexadecimais
+          (ex.: 0xA91F4C2B8D3E7F0A5C6B9D2E4F8A1C3B5D7E9F02).
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            const bytes = crypto.getRandomValues(new Uint8Array(20))
+            set('address', `0x${Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('')}`)
+          }}
+          className="mt-1 text-[10px] font-bold text-accent hover:underline"
+        >
+          Gerar endereço de teste
+        </button>
       </div>
       <div>
         <Label htmlFor="wallet-ens-secondary">ENS ou carteira secundária (opcional)</Label>

@@ -46,7 +46,7 @@ export function Journal() {
       <h2 id="journal-title" className="text-center text-2xl font-bold tracking-[0.06em]">
         Diário da Cunhagem
       </h2>
-      <p className="mx-auto mt-3 max-w-xl text-center text-xs text-content-muted">
+      <p className="mx-auto mt-3 max-w-xl text-center text-xs text-sand">
         Histórias, guias e insights para colecionadores sobre o universo da
         propriedade digital.
       </p>

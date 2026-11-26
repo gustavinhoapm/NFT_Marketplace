@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Heart, Home, ScanLine, ShoppingBag, UserRound } from 'lucide-react'
+import { Heart, Home, ScanLine, ShoppingCart, UserRound } from 'lucide-react'
 
 import { useAuth } from '@/hooks/use-auth'
 import { useCart } from '@/hooks/use-cart'
@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 export function MobileNav() {
   const { data: cart } = useCart()
   const { isAuthenticated } = useAuth()
-  const count = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
+  const count = (cart?.items ?? []).reduce((sum, item) => sum + item.quantity, 0)
 
   const itemClass = 'flex h-8 w-8 items-center justify-center text-content-muted hover:text-accent'
 
@@ -39,7 +39,7 @@ export function MobileNav() {
           aria-label={`Carrinho com ${count} ${count === 1 ? 'item' : 'itens'}`}
           className={cn(itemClass, 'relative')}
         >
-          <ShoppingBag className="h-5 w-5" />
+          <ShoppingCart className="h-4 w-4" />
           {count > 0 && (
             <span className="absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold text-ink">
               {count}

@@ -92,7 +92,7 @@ export function SiteFooter() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="Digite seu e-mail.."
-                className="h-9 min-w-0 flex-1 rounded-sm border border-line bg-ink px-3 text-[11px] placeholder:text-content-subtle focus:border-accent focus:outline-none"
+                className="h-9 min-w-0 flex-1 rounded-sm border border-line bg-coffee px-3 text-[11px] placeholder:text-sand focus:border-accent focus:outline-none"
               />
               <button type="submit" className="rounded-sm bg-accent px-4 py-2 text-[11px] font-bold text-ink hover:bg-accent-hover">
                 Enviar

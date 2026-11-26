@@ -380,6 +380,12 @@ function CheckoutPage() {
                   className={cn(!useOtherWallet && 'opacity-80')}
                 />
                 <FieldError>{fieldError.walletAddress}</FieldError>
+                {useOtherWallet && (
+                  <p className="mt-1.5 text-[10px] text-content-subtle">
+                    Formato Ethereum: <code>0x</code> + 40 hexadecimais. Sem isso, o endereço
+                    vem da carteira cadastrada selecionada em “Carteira e rede”.
+                  </p>
+                )}
               </div>
               <div>
                 <Label htmlFor="secondary">ENS ou carteira secundária (opcional)</Label>
@@ -430,26 +436,6 @@ function CheckoutPage() {
               <Textarea id="note" value={note} onChange={(e) => setNote(e.target.value)} />
             </div>
 
-            <div className="mt-6 flex flex-wrap items-center gap-3 rounded-sm border border-line bg-coffee/40 p-3">
-              <Button
-                type="button"
-                variant="secondary"
-                size="sm"
-                disabled={!walletId || connecting}
-                onClick={connectWallet}
-              >
-                {connecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wallet className="h-4 w-4" />}
-                {connecting ? 'Conectando…' : connected ? 'Conectado' : 'Conectar carteira'}
-              </Button>
-              {connected && (
-                <button type="button" onClick={() => setConnected(false)} className="text-xs text-content-muted hover:text-danger">
-                  Desconectar
-                </button>
-              )}
-              <span className="text-[11px] text-content-subtle">
-                {connected ? 'Sessão da carteira ativa nesta aba.' : 'Conexão simulada, sem assinatura real.'}
-              </span>
-            </div>
           </section>
 
           {/* Resumo + carteiras */}
@@ -481,15 +467,48 @@ function CheckoutPage() {
               )}
             </div>
 
-            <label className="mt-6 flex items-center gap-2 text-[11px] text-content-muted">
-              <input
-                type="checkbox"
-                checked={decline}
-                onChange={(e) => setDecline(e.target.checked)}
-                className="accent-accent"
-              />
-              Cenário de demonstração: simular recusa do pagamento
-            </label>
+            {/* Cenários exigidos pelo enunciado (conexão/recusa), fora do
+                composição visual do frame: recolhidos por padrão. */}
+            <details className="mt-6 rounded-sm border border-line bg-coffee/30 p-3">
+              <summary className="cursor-pointer text-[11px] font-bold text-content-muted">
+                Cenários de demonstração (avaliadores)
+              </summary>
+              <div className="mt-3 space-y-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    disabled={!walletId || connecting}
+                    onClick={connectWallet}
+                  >
+                    {connecting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wallet className="h-4 w-4" />}
+                    {connecting ? 'Conectando…' : connected ? 'Conectado' : 'Conectar carteira'}
+                  </Button>
+                  {connected && (
+                    <button type="button" onClick={() => setConnected(false)} className="text-xs text-content-muted hover:text-danger">
+                      Desconectar
+                    </button>
+                  )}
+                  <span className="text-[11px] text-content-subtle">
+                    {connected ? 'Sessão da carteira ativa nesta aba.' : 'Conexão simulada, sem assinatura real.'}
+                  </span>
+                </div>
+                <label className="flex items-center gap-2 text-[11px] text-content-muted">
+                  <input
+                    type="checkbox"
+                    checked={decline}
+                    onChange={(e) => setDecline(e.target.checked)}
+                    className="accent-accent"
+                  />
+                  Simular recusa do pagamento
+                </label>
+                <p className="text-[10px] leading-relaxed text-content-subtle">
+                  Mais cenários (latência, offline, timeout, sessão expirada) em
+                  <code> window.__KURIO__</code> — ver README.
+                </p>
+              </div>
+            </details>
 
             {createOrder.error && !needsConfirmation && (
               <p role="alert" className="mt-4 rounded-sm bg-danger/10 p-3 text-xs text-danger">

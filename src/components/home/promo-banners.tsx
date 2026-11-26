@@ -34,7 +34,7 @@ export function PromoBanners() {
             <Link
               to="/"
               search={banner.search}
-              className="mt-4 inline-flex w-fit items-center gap-2 rounded-sm bg-accent px-4 py-2 text-[11px] font-bold text-ink hover:bg-accent-hover"
+              className="mt-4 inline-flex w-fit items-center gap-2 self-end rounded-sm bg-accent px-4 py-2 text-[11px] font-bold text-ink hover:bg-accent-hover"
             >
               Explorar <ArrowRight aria-hidden="true" className="h-3 w-3" />
             </Link>

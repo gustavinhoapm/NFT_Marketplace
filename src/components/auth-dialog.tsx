@@ -47,7 +47,9 @@ export function AuthDialog({
         </button>
       </div>
       <p className="mt-4 mb-6 text-center text-xs text-content-muted">
-        Entre para gerenciar sua carteira, coleção e perfil de criador.
+        {mode === 'login'
+          ? 'Entre para gerenciar sua carteira, coleção e perfil de criador.'
+          : 'Crie seu perfil de colecionador e conecte uma carteira quando quiser.'}
       </p>
       <AuthForm mode={mode} onSuccess={() => onOpenChange(false)} />
     </Dialog>

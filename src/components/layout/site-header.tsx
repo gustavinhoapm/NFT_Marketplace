@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
-import { Search, ShoppingBag, UserRound } from 'lucide-react'
+import { LogIn, Search, ShoppingCart } from 'lucide-react'
 import { useEffect, useState, type FormEvent } from 'react'
 
 import { useAuth } from '@/hooks/use-auth'
@@ -20,7 +20,7 @@ export function SiteHeader({ onAuth }: { onAuth: () => void }) {
   const { user, isAuthenticated } = useAuth()
   const [term, setTerm] = useState('')
   const [searchOpen, setSearchOpen] = useState(false)
-  const count = cart?.items.reduce((sum, item) => sum + item.quantity, 0) ?? 0
+  const count = (cart?.items ?? []).reduce((sum, item) => sum + item.quantity, 0)
   const searchStr = useRouterState({ select: (state) => state.location.searchStr })
 
   // A busca também é estado da URL: refresh/histórico restauram o termo.
@@ -35,12 +35,12 @@ export function SiteHeader({ onAuth }: { onAuth: () => void }) {
 
   return (
     <header className="sticky top-0 z-40 hidden border-b border-line bg-ink/95 backdrop-blur md:block">
-      <div className="mx-auto flex h-14 max-w-[1200px] items-center gap-8 px-4 sm:px-6 lg:px-[30px]">
+      <div className="mx-auto grid h-14 max-w-[1200px] grid-cols-[auto_1fr_auto] items-center gap-8 px-4 sm:px-6 lg:px-[30px]">
         <Link to="/" className="shrink-0 text-sm font-bold tracking-[0.22em]">
           KURIO
         </Link>
 
-        <nav aria-label="Navegação principal" className="hidden items-center gap-7 md:flex">
+        <nav aria-label="Navegação principal" className="hidden items-center justify-center gap-7 md:flex">
           {NAV.map((item, index) => (
             <Link
               key={item.label}
@@ -58,7 +58,7 @@ export function SiteHeader({ onAuth }: { onAuth: () => void }) {
           ))}
         </nav>
 
-        <div className="ml-auto flex items-center gap-4">
+        <div className="flex items-center gap-4 justify-self-end">
           <form onSubmit={submitSearch} className="hidden items-center md:flex">
             <label htmlFor="header-search" className="sr-only">Buscar NFTs</label>
             <div className="relative">
@@ -92,7 +92,7 @@ export function SiteHeader({ onAuth }: { onAuth: () => void }) {
             aria-label={`Carrinho com ${count} ${count === 1 ? 'item' : 'itens'}`}
             className="relative text-content-muted hover:text-content"
           >
-            <ShoppingBag className="h-4 w-4" />
+            <ShoppingCart className="h-4 w-4" />
             {count > 0 && (
               <span className="absolute -top-1.5 -right-2 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-accent px-1 text-[9px] font-bold text-ink">
                 {count}
@@ -105,7 +105,7 @@ export function SiteHeader({ onAuth }: { onAuth: () => void }) {
               to="/perfil"
               className="inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-[11px] font-bold text-ink hover:bg-accent-hover"
             >
-              <UserRound aria-hidden="true" className="h-3.5 w-3.5" />
+              <LogIn aria-hidden="true" className="h-3.5 w-3.5" />
               {user?.displayName?.split(' ')[0] ?? 'Perfil'}
             </Link>
           ) : (
@@ -114,7 +114,7 @@ export function SiteHeader({ onAuth }: { onAuth: () => void }) {
               onClick={onAuth}
               className="inline-flex items-center gap-2 rounded-sm bg-accent px-4 py-2 text-[11px] font-bold text-ink hover:bg-accent-hover"
             >
-              <UserRound aria-hidden="true" className="h-3.5 w-3.5" />
+              <LogIn aria-hidden="true" className="h-3.5 w-3.5" />
               Entrar
             </button>
           )}

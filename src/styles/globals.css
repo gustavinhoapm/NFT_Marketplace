@@ -28,6 +28,8 @@
 
   /* Arte */
   --color-cream: #fdf2da;
+  /* Tom de apoio medido no frame (subtítulo do Diário da Cunhagem). */
+  --color-sand: #cfb28c;
 
   /* Semânticas */
   --color-danger: #d4574a;
