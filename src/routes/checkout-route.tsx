@@ -111,15 +111,22 @@ function CheckoutPage() {
 
   function validate(): Record<string, string> {
     const errors: Record<string, string> = {}
-    if (!displayName.trim()) errors.displayName = 'Obrigatório'
-    if (!username.trim()) errors.username = 'Obrigatório'
-    if (!profileName.trim()) errors.profileName = 'Obrigatório'
-    if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = 'E-mail inválido'
+    /**
+     * No mobile o formulário do colecionador não existe (frame mobile usa os
+     * dados do perfil); só exigimos o que está visível para o usuário.
+     */
+    const collectorVisible = window.matchMedia('(min-width: 768px)').matches
+    if (collectorVisible) {
+      if (!displayName.trim()) errors.displayName = 'Obrigatório'
+      if (!username.trim()) errors.username = 'Obrigatório'
+      if (!profileName.trim()) errors.profileName = 'Obrigatório'
+      if (!/^\S+@\S+\.\S+$/.test(email)) errors.email = 'E-mail inválido'
+      if (!ensName.trim()) errors.ensName = 'Obrigatório'
+    }
     if (!network) errors.network = 'Selecione uma rede'
     if (!walletType) errors.walletType = 'Selecione uma carteira'
     if (!/^0x[a-fA-F0-9]{6,}$/.test(walletAddress)) errors.walletAddress = 'Endereço 0x inválido'
     if (!referralCode.trim()) errors.referralCode = 'Obrigatório'
-    if (!ensName.trim()) errors.ensName = 'Obrigatório'
     return errors
   }
 

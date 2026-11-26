@@ -2,14 +2,15 @@ import { expect, test, type Page } from '@playwright/test'
 
 /**
  * Jornada completa do colecionador, na ordem do aceite manual:
- * criar conta → deslogar → logar → adicionar item → remover item →
- * adicionar de novo → finalizar compra → recibo confirmado.
+ * criar conta → deslogar → logar → cadastrar carteira → adicionar item →
+ * remover item → adicionar de novo → finalizar compra → recibo confirmado →
+ * pedido recuperável após refresh.
  */
 async function waitForMocks(page: Page) {
   await page.waitForFunction(() => Boolean(window.__KURIO__), undefined, { timeout: 15_000 })
 }
 
-test('jornada: conta, sessão, carrinho e compra', async ({ page }) => {
+test('jornada: conta, sessão, carteira, carrinho e compra', async ({ page }) => {
   // --- criar conta
   await page.goto('/cadastro')
   await waitForMocks(page)
@@ -42,7 +43,12 @@ test('jornada: conta, sessão, carrinho e compra', async ({ page }) => {
   await page.getByLabel(/^Tipo de carteira/).selectOption('metamask')
   await page.getByLabel(/^Código de indicação/).fill('KURIO-JOR-01')
   await page.getByRole('button', { name: 'Salvar carteira' }).last().click()
-  // a primeira carteira vira principal e aparece no formulário da seção principal
+  await expect(page.getByLabel(/^Apelido da carteira/)).toHaveValue('Principal Jornada')
+
+  // persistência da carteira após reload (settle para o flush da mutation)
+  await page.waitForTimeout(600)
+  await page.reload()
+  await page.waitForFunction(() => Boolean(window.__KURIO__))
   await expect(page.getByLabel(/^Apelido da carteira/)).toHaveValue('Principal Jornada')
 
   // --- adicionar item
@@ -60,6 +66,9 @@ test('jornada: conta, sessão, carrinho e compra', async ({ page }) => {
   await page.goto('/nft/nft_002')
   await page.getByRole('button', { name: 'Comprar', exact: true }).locator('visible=true').first().click()
   await expect(page).toHaveURL('/pagamento')
+  // conta nova não tem ENS no perfil; o campo só existe no layout desktop
+  const ens = page.getByLabel(/^Nome ENS/).first()
+  if (await ens.isVisible()) await ens.fill('jornada')
   const confirm = page.getByRole('button', { name: 'Confirmar compra' }).locator('visible=true').first()
   await expect(confirm).toBeEnabled({ timeout: 15_000 })
   await confirm.click()

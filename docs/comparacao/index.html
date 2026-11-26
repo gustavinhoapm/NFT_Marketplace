@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>KURIÓ — comparação Figma × App</title>
+<style>
+  body { margin: 0; background: #140d0a; color: #f5f1eb; font-family: monospace; }
+  header { padding: 24px; }
+  h1 { font-size: 20px; }
+  p { color: #bdb8b3; font-size: 12px; max-width: 70ch; }
+  section { padding: 8px 24px 32px; }
+  h2 { font-size: 14px; color: #d28a4c; border-bottom: 1px solid #3f2319; padding-bottom: 8px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  figure { margin: 0; }
+  figcaption { font-size: 11px; color: #bdb8b3; margin-bottom: 6px; }
+  img { width: 100%; border: 1px solid #3f2319; border-radius: 8px; background: #241612; }
+  @media (max-width: 900px) { .row { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Comparação Figma × App</h1>
+  <p>Gerada por <code>npm run compare:page</code> a partir de <code>docs/figma/</code> (referência)
+  e <code>docs/comparacao/shots/</code> (capturas do app rodando com mocks).
+  Regere as capturas com <code>COMPARE=1 npx playwright test tests/e2e/compare-captures.spec.ts</code>.</p>
+</header>
+
+  <section>
+    <h2>Desktop · Início</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/inicio.png" alt="Figma Desktop · Início" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-inicio.png" alt="App Desktop · Início" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Mobile · Início</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/mobile/inicio.png" alt="Figma Mobile · Início" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/mobile-inicio.png" alt="App Mobile · Início" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Desktop · Detalhes do NFT</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/detalhe.png" alt="Figma Desktop · Detalhes do NFT" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-detalhe.png" alt="App Desktop · Detalhes do NFT" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Mobile · Detalhes do NFT</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/mobile/detalhe.png" alt="Figma Mobile · Detalhes do NFT" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/mobile-detalhe.png" alt="App Mobile · Detalhes do NFT" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Desktop · Carrinho de NFTs</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/carrinho.png" alt="Figma Desktop · Carrinho de NFTs" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-carrinho.png" alt="App Desktop · Carrinho de NFTs" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Mobile · Carrinho de NFTs</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/mobile/carrinho.png" alt="Figma Mobile · Carrinho de NFTs" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/mobile-carrinho.png" alt="App Mobile · Carrinho de NFTs" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Desktop · Pagamento</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/pagamento.png" alt="Figma Desktop · Pagamento" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-pagamento.png" alt="App Desktop · Pagamento" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Mobile · Pagamento</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/mobile/pagamento.png" alt="Figma Mobile · Pagamento" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/mobile-pagamento.png" alt="App Mobile · Pagamento" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Desktop · Confirmação de Pedido</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/confirmacao.png" alt="Figma Desktop · Confirmação de Pedido" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-confirmacao.png" alt="App Desktop · Confirmação de Pedido" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Desktop · Login</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/login.png" alt="Figma Desktop · Login" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-login.png" alt="App Desktop · Login" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Mobile · Login</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/mobile/login.png" alt="Figma Mobile · Login" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/mobile-login.png" alt="App Mobile · Login" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Desktop · Cadastro</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/cadastro.png" alt="Figma Desktop · Cadastro" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-cadastro.png" alt="App Desktop · Cadastro" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Mobile · Cadastro</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/mobile/cadastro.png" alt="Figma Mobile · Cadastro" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/mobile-cadastro.png" alt="App Mobile · Cadastro" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Desktop · Perfil do Colecionador</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/perfil.png" alt="Figma Desktop · Perfil do Colecionador" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-perfil.png" alt="App Desktop · Perfil do Colecionador" loading="lazy"></figure>
+    </div>
+  </section>
+  <section>
+    <h2>Desktop · Carteiras</h2>
+    <div class="row">
+      <figure><figcaption>Figma</figcaption><img src="../figma/desktop/carteiras.png" alt="Figma Desktop · Carteiras" loading="lazy"></figure>
+      <figure><figcaption>App (captura atual)</figcaption><img src="shots/desktop-carteiras.png" alt="App Desktop · Carteiras" loading="lazy"></figure>
+    </div>
+  </section>
+</body>
+</html>

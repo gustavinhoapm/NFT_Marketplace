@@ -194,11 +194,15 @@ export function AuthForm({
             }}
             className="flex h-11 w-full items-center justify-center gap-3 rounded-sm border border-line text-xs hover:border-accent-muted disabled:opacity-60"
           >
-            {provider === 'Google' ? (
-              <GoogleBrandIcon className="h-4 w-4" />
-            ) : (
-              <FacebookBrandIcon className="h-4 w-4" />
-            )}
+            {/* caixa fixa garante mesmo tamanho óptico e alinhamento vertical
+                entre o "G" (viewBox 24, glifo ~18px) e o "f" (viewBox recortado) */}
+            <span aria-hidden="true" className="flex h-5 w-5 shrink-0 items-center justify-center">
+              {provider === 'Google' ? (
+                <GoogleBrandIcon className="h-[22px] w-[22px]" />
+              ) : (
+                <FacebookBrandIcon className="h-4 w-4" />
+              )}
+            </span>
             {socialPending === provider ? `Conectando com ${provider}…` : `Continuar com ${provider}`}
           </button>
         ))}
