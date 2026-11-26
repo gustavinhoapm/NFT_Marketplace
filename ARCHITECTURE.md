@@ -44,10 +44,18 @@ expirado, `422` validação com `fieldErrors`, `504` timeout/falha transitória.
 | `order.updated`| `{ id, event, version, resourceKey, payload: { orderId, status, failureReason? } }` | dono do pedido |
 
 Transporte: WebSocket puro (`transports: ['websocket']`), pois o binding só
-intercepta WebSocket. Limitações documentadas: o binding não responde ao
-heartbeat bruto do Engine.IO (o mock responde `2`→`3`), não há rooms/namespaces
-e o handshake é emitido pelo wrapper (`io.client.emit`), já que
-`server.send()` do MSW escreve no servidor real.
+intercepta WebSocket. Usamos `@mswjs/socket.io-binding@0.2.0` (API
+`toSocketIo(connection)`); o README do branch `main` do pacote documenta a API
+nova (`ws.link(url, { protocol: new SocketIo() })`), que exige MSW mais recente
+— o pin é deliberado e o comportamento atual é coberto por testes E2E.
+Limitações oficiais do binding: somente namespace padrão e eventos de texto
+(sem namespaces customizados, acknowledgements ou anexos binários). Limitações
+adicionais descobertas na integração e contornadas no mock: o binding não
+responde ao heartbeat bruto do Engine.IO (respondemos `2`→`3`); o MSW 2.15
+reescreve `/socket.io/` para `/` antes de casar o handler (o link casa o path
+normalizado); e `server.send()` do MSW escreve no servidor real, então a
+direção servidor→cliente é emitida pelo wrapper do lado do cliente
+(`io.client.emit`).
 
 **Reconciliação:** ao (re)conectar, o cliente invalida `nfts`, `nft`, `cart` e
 `order` via REST; eventos carregam `id` estável e `version` por recurso, e o

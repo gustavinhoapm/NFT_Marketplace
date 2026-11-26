@@ -165,9 +165,13 @@ function ConfirmationPage() {
                   Tentar novamente
                 </Link>
               )}
-              <Link to="/" className="rounded-sm border border-line px-6 py-3 text-xs font-bold text-content-muted hover:border-accent hover:text-accent">
-                Voltar ao catálogo
-              </Link>
+              {/* O frame confirmado tem apenas "Ver no Etherscan" + o X; nos
+                  estados não desenhados (pendente/recusado) oferecemos saída. */}
+              {!confirmed && (
+                <Link to="/" className="rounded-sm border border-line px-6 py-3 text-xs font-bold text-content-muted hover:border-accent hover:text-accent">
+                  Voltar ao catálogo
+                </Link>
+              )}
             </div>
           </div>
 
