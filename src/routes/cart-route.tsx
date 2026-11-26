@@ -203,7 +203,7 @@ function CartPage() {
                 {cart.items.map((item) => (
                   <li
                     key={item.id}
-                    className="rounded-md border border-line bg-surface p-3 lg:grid lg:grid-cols-[1fr_120px_140px_120px_40px] lg:items-center lg:gap-4 lg:border-none lg:p-2"
+                    className="card-hover rounded-md border border-line bg-surface p-3 lg:grid lg:grid-cols-[1fr_120px_140px_120px_40px] lg:items-center lg:gap-4 lg:border-none lg:p-2 lg:hover:transform-none"
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <Link to="/nft/$nftId" params={{ nftId: item.nftId }} className="shrink-0">

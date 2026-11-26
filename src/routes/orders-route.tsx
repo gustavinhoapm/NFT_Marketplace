@@ -81,7 +81,7 @@ function OrdersPage() {
             const Icon = STATUS_ICONS[order.status]
             return (
               <li key={order.id}>
-                <Card>
+                <Card className="card-hover">
                   <CardContent className="flex flex-wrap items-center gap-4">
                     <Icon className={`h-6 w-6 shrink-0 ${STATUS_COLORS[order.status]}`} />
                     <div className="min-w-0 flex-1">

@@ -4,7 +4,10 @@ test('login social simulado autentica conta de demonstração', async ({ page })
   await page.goto('/entrar')
   await page.getByRole('button', { name: 'Continuar com Google' }).click()
   await expect(page).toHaveURL('/')
-  await expect(page.getByRole('link', { name: /Gustavo/i }).first()).toBeVisible()
+  // sessão efetiva (independente de viewport: header some no mobile)
+  await expect
+    .poll(() => page.evaluate(() => localStorage.getItem('kurio:session-token')))
+    .toBeTruthy()
 })
 
 test('logout limpa o nome no header e os dados privados', async ({ page }) => {

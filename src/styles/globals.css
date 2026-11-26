@@ -47,6 +47,25 @@
   --radius-xl: 20px;
 }
 
+@layer components {
+  /*
+   * Hover "vivo" para cards: elevação + borda em acento com transição suave.
+   * O bloco de prefers-reduced-motion abaixo já neutraliza a transição.
+   */
+  .card-hover {
+    transition:
+      transform 200ms ease,
+      border-color 200ms ease,
+      background-color 200ms ease,
+      box-shadow 200ms ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-2px);
+    border-color: var(--color-accent-muted);
+    box-shadow: 0 10px 24px rgb(0 0 0 / 0.35);
+  }
+}
+
 @layer base {
   html {
     color-scheme: dark;

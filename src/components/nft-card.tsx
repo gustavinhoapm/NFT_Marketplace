@@ -27,7 +27,7 @@ export function NftCard({
       <Link
         to="/nft/$nftId"
         params={{ nftId: nft.id }}
-        className="relative block overflow-hidden rounded-md border border-line bg-surface p-2.5 transition-colors hover:border-accent-muted"
+        className="card-hover relative block overflow-hidden rounded-md border border-line bg-surface p-2.5"
         aria-label={`Ver detalhes de ${nft.name}`}
       >
         <div className="relative overflow-hidden rounded-sm bg-cream">

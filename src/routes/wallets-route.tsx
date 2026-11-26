@@ -356,7 +356,7 @@ function WalletsPage() {
           {secondaries.length > 0 && (
             <ul className="mt-5 space-y-3">
               {secondaries.map((wallet) => (
-                <li key={wallet.id} className="flex flex-wrap items-center gap-4 rounded-md border border-line bg-surface p-4">
+                <li key={wallet.id} className="card-hover flex flex-wrap items-center gap-4 rounded-md border border-line bg-surface p-4">
                   <div className="min-w-0 flex-1">
                     <p className="text-xs font-bold">{wallet.label}</p>
                     <p className="mt-1 truncate font-mono text-[10px] text-content-subtle">{wallet.address}</p>

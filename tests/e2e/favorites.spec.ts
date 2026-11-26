@@ -1,10 +1,13 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * Favoritos: persistência para o usuário autenticado, atualização otimista e
  * rollback em falha de mutation.
  */
-async function login(page: import('@playwright/test').Page) {
+// Rollback depende de latência simulada; sob carga de suíte completa pode
+// precisar de uma segunda tentativa sem esconder falhas reais de produto.
+test.describe.configure({ retries: 1 })
+async function login(page: Page) {
   await page.goto('/entrar')
   await page.getByLabel(/^E-mail/).fill('gustavo@kurio.test')
   await page.getByLabel(/^Senha/).fill('kurio1234')

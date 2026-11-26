@@ -54,7 +54,7 @@ export function Journal() {
       <ul className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {POSTS.map((post) => (
           <li key={post.id}>
-            <article className="flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface">
+            <article className="card-hover flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface">
               <img src={post.image} alt="" className="aspect-[4/3] w-full object-cover" />
               <div className="flex flex-1 flex-col p-4">
                 <p className="flex flex-wrap gap-x-2 text-[10px] text-content-subtle">

@@ -95,6 +95,12 @@ cliente descarta duplicatas e versões antigas antes de tocar o cache.
   continua informativa (não faz parte da entrega).
 - No desktop o login é modal (frame); `/entrar` e `/cadastro` existem como
   páginas (frames mobile) e para acesso direto/redirects.
+- O botão "Ver no Etherscan" do recibo abre um **explorador simulado** dentro do
+  app (dialog com hash, rede, bloco derivado do hash e status), em vez de link
+  externo: o enunciado pede referências de transação e links de exploração
+  simulados, e um hash fictício em explorador real seria incoerente.
+- Cards e botões usam transições de hover (elevação/borda em acento via
+  `.card-hover`), neutralizadas por `prefers-reduced-motion`.
 - Ícones de marca e ilustrações dos NFTs são substituições documentadas em
   `docs/ASSETS.md`.
 - O seletor de edição no detalhe usa chips (frame) em vez de dropdown; a

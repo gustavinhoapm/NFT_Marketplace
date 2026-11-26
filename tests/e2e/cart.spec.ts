@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * Carrinho: quantidades, remoção, cupom inválido/válido, persistência após
@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
   await page.waitForSelector('article')
 })
 
-async function login(page: import('@playwright/test').Page) {
+async function login(page: Page) {
   await page.goto('/entrar')
   await page.getByLabel(/^E-mail/).fill('gustavo@kurio.test')
   await page.getByLabel(/^Senha/).fill('kurio1234')

@@ -1,10 +1,10 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * Compra completa, recusa, clique repetido (idempotência) e timeout com
  * recuperação do mesmo pedido — tudo passando pela simulação (MSW + socket).
  */
-async function login(page: import('@playwright/test').Page, email = 'gustavo@kurio.test', password = 'kurio1234') {
+async function login(page: Page, email = 'gustavo@kurio.test', password = 'kurio1234') {
   await page.goto('/entrar')
   await page.getByLabel(/^E-mail/).fill(email)
   await page.getByLabel(/^Senha/).fill(password)
@@ -12,7 +12,7 @@ async function login(page: import('@playwright/test').Page, email = 'gustavo@kur
   await expect(page).toHaveURL('/')
 }
 
-async function addToCart(page: import('@playwright/test').Page, nftId: string) {
+async function addToCart(page: Page, nftId: string) {
   await page.goto(`/nft/${nftId}`)
   await page.getByRole('button', { name: 'Comprar', exact: true }).first().click()
   await expect(page).toHaveURL('/pagamento')
@@ -46,7 +46,9 @@ test('compra completa do catálogo ao recibo confirmado', async ({ page }) => {
 
 test('pagamento recusado mantém os itens no carrinho', async ({ page }) => {
   await addToCart(page, 'nft_007')
-  await page.getByLabel(/Cenário de demonstração/).check()
+  // cenários de demonstração ficam recolhidos para não poluir o frame
+  await page.getByText('Cenários de demonstração (avaliadores)').click()
+  await page.getByLabel('Simular recusa do pagamento').check()
   await page.getByRole('button', { name: 'Confirmar compra' }).locator('visible=true').first().click()
 
   await expect(page.getByRole('heading', { name: /Pagamento recusado/i })).toBeVisible({

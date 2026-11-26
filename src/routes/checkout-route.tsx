@@ -373,19 +373,20 @@ function CheckoutPage() {
                 <Input
                   id="wallet-address"
                   value={walletAddress}
-                  onChange={(e) => setWalletAddress(e.target.value)}
+                  onChange={(e) => {
+                    // Digitar desvincula da carteira selecionada (modo manual).
+                    setWalletAddress(e.target.value)
+                    setUseOtherWallet(true)
+                  }}
                   placeholder="Endereço 0x da carteira"
-                  readOnly={!useOtherWallet}
                   invalid={Boolean(fieldError.walletAddress)}
-                  className={cn(!useOtherWallet && 'opacity-80')}
                 />
                 <FieldError>{fieldError.walletAddress}</FieldError>
-                {useOtherWallet && (
-                  <p className="mt-1.5 text-[10px] text-content-subtle">
-                    Formato Ethereum: <code>0x</code> + 40 hexadecimais. Sem isso, o endereço
-                    vem da carteira cadastrada selecionada em “Carteira e rede”.
-                  </p>
-                )}
+                <p className="mt-1.5 text-[10px] text-content-subtle">
+                  Pré-preenchido pela carteira escolhida em “Carteira e rede”; formato
+                  Ethereum: <code>0x</code> + 40 hexadecimais. Digitar um valor próprio
+                  ativa “Usar outra carteira?”.
+                </p>
               </div>
               <div>
                 <Label htmlFor="secondary">ENS ou carteira secundária (opcional)</Label>

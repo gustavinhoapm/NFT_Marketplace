@@ -1,15 +1,15 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * W6/W7/W8 + E4: eventos reais de servidor chegam ao cliente via Socket.IO
  * (interceptado pelo MSW) e atualizam o cache — sem recarregar a página.
  */
-async function waitForMocks(page: import('@playwright/test').Page) {
+async function waitForMocks(page: Page) {
   await page.waitForFunction(() => Boolean(window.__KURIO__), undefined, { timeout: 15_000 })
 }
 
 /** Cenários sensíveis a tempo: só dispara o evento com o socket conectado. */
-async function waitForSocket(page: import('@playwright/test').Page) {
+async function waitForSocket(page: Page) {
   await page.waitForFunction(() => window.__KURIO__.socketConnected(), undefined, {
     timeout: 15_000,
   })

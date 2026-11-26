@@ -1,9 +1,12 @@
 import { createRoute, Link, useNavigate } from '@tanstack/react-router'
-import { Clock, Mail, X, XCircle } from 'lucide-react'
+import { Clock, X, XCircle } from 'lucide-react'
+import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { Dialog } from '@/components/ui/dialog'
 import { MobileTopBar } from '@/components/layout/mobile-top-bar'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ThankYouEnvelope } from '@/components/ui/thank-you-envelope'
 import { errorMessage } from '@/lib/api-error'
 import { formatEth } from '@/lib/money'
 import { useOrder } from '@/hooks/use-orders'
@@ -25,6 +28,7 @@ function ConfirmationPage() {
   const { orderId } = confirmationRoute.useParams()
   const navigate = useNavigate()
   const { data: order, isPending, isError, error, refetch } = useOrder(orderId)
+  const [explorerOpen, setExplorerOpen] = useState(false)
 
   if (isPending) {
     return (
@@ -46,6 +50,10 @@ function ConfirmationPage() {
 
   const confirmed = order.status === 'confirmed'
   const declined = order.status === 'declined'
+  // "Bloco" determinístico derivado do hash: explorador é simulado (enunciado).
+  const blockNumber = order.transactionHash
+    ? 18_000_000 + (parseInt(order.transactionHash.slice(2, 10), 16) % 900_000)
+    : null
 
   return (
     <>
@@ -65,7 +73,7 @@ function ConfirmationPage() {
           </button>
 
           <div className="px-6 pt-10 pb-6 text-center">
-            {confirmed && <Mail aria-hidden="true" className="mx-auto h-14 w-14 text-accent" />}
+            {confirmed && <ThankYouEnvelope className="mx-auto h-16 w-16 text-accent" />}
             {order.status === 'pending' && (
               <Clock aria-hidden="true" className="mx-auto h-14 w-14 animate-pulse text-accent" />
             )}
@@ -143,15 +151,14 @@ function ConfirmationPage() {
             </p>
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              {confirmed && order.explorerUrl && (
-                <a
-                  href={order.explorerUrl}
-                  target="_blank"
-                  rel="noreferrer"
+              {confirmed && order.transactionHash && (
+                <button
+                  type="button"
+                  onClick={() => setExplorerOpen(true)}
                   className="rounded-sm bg-accent px-6 py-3 text-xs font-bold text-ink hover:bg-accent-hover"
                 >
                   Ver no Etherscan
-                </a>
+                </button>
               )}
               {declined && (
                 <Link to="/carrinho" className="rounded-sm bg-accent px-6 py-3 text-xs font-bold text-ink hover:bg-accent-hover">
@@ -166,6 +173,36 @@ function ConfirmationPage() {
 
           <div aria-hidden="true" className="h-1.5 bg-accent" />
         </section>
+
+        <Dialog
+          open={explorerOpen}
+          onOpenChange={setExplorerOpen}
+          title="Explorador simulado"
+          description="Referência de transação e link de exploração são simulados, como prevê o enunciado — nenhum dado sai desta demonstração."
+        >
+          <dl className="space-y-3 text-xs">
+            <div className="flex justify-between gap-4">
+              <dt className="text-content-muted">Transação</dt>
+              <dd className="break-all font-mono text-accent">{order.transactionHash}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-content-muted">Rede</dt>
+              <dd className="font-bold capitalize">{order.network}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-content-muted">Bloco</dt>
+              <dd className="font-bold">{blockNumber?.toLocaleString('pt-BR')}</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-content-muted">Status</dt>
+              <dd className="font-bold text-success">Confirmado (12 confirmações)</dd>
+            </div>
+            <div className="flex justify-between">
+              <dt className="text-content-muted">Timestamp</dt>
+              <dd className="font-bold">{new Date(order.updatedAt).toLocaleString('pt-BR')}</dd>
+            </div>
+          </dl>
+        </Dialog>
       </main>
     </>
   )

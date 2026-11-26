@@ -25,7 +25,7 @@ export function PromoBanners() {
       {BANNERS.map((banner) => (
         <article
           key={banner.id}
-          className="grid overflow-hidden rounded-md border border-line bg-surface sm:grid-cols-[220px_1fr]"
+          className="card-hover grid overflow-hidden rounded-md border border-line bg-surface sm:grid-cols-[220px_1fr]"
         >
           <img src={banner.image} alt="" className="h-40 w-full object-cover sm:h-full" />
           <div className="flex flex-col justify-center p-6">

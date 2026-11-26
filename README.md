@@ -16,6 +16,12 @@ npm run dev          # http://localhost:5173 (porta padrão do Vite)
 Requisitos: Node >= 20.9. O worker do MSW (`public/mockServiceWorker.js`) já
 está versionado; não é necessário rodar `msw init`.
 
+Para rodar os testes E2E pela primeira vez, instale o navegador do Playwright:
+
+```bash
+npx playwright install chromium
+```
+
 ## Variáveis de ambiente
 
 | Variável             | Padrão   | Efeito                                        |

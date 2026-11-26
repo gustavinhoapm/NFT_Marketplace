@@ -1,11 +1,11 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * Regressão visual com dados estáveis (reset antes de cada captura).
  * Baselines versionadas em tests/e2e/visual.spec.ts-snapshots/.
  * Atualizar propositalmente: npx playwright test --update-snapshots visual
  */
-async function seed(page: import('@playwright/test').Page) {
+async function seed(page: Page) {
   await page.goto('/')
   await page.waitForFunction(() => Boolean(window.__KURIO__))
   await page.evaluate(() => window.__KURIO__.reset())
@@ -15,7 +15,7 @@ async function seed(page: import('@playwright/test').Page) {
   await page.evaluate(() => Promise.all(Array.from(document.images).map((img) => (img.complete ? Promise.resolve() : img.decode()))))
 }
 
-async function seedWithCart(page: import('@playwright/test').Page) {
+async function seedWithCart(page: Page) {
   await seed(page)
   await page.goto('/entrar')
   await page.getByLabel(/^E-mail/).fill('gustavo@kurio.test')
