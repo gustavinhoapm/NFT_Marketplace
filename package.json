@@ -17,7 +17,8 @@
     "lighthouse": "lhci autorun",
     "lighthouse:desktop": "lhci autorun --config=lighthouserc.desktop.json",
     "lighthouse:summary": "node scripts/lighthouse-summary.mjs",
-    "compare:page": "node scripts/make-compare-page.mjs"
+    "compare:page": "node scripts/make-compare-page.mjs",
+    "compare": "node scripts/compare.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^7.0.9",

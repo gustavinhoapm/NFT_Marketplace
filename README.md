@@ -75,6 +75,7 @@ O reset também restaura a configuração de rede (isolamento entre testes).
 | `npm run lighthouse`        | auditoria mobile (LHCI, 3 medições/página)   |
 | `npm run lighthouse:desktop`| auditoria desktop                            |
 | `npm run lighthouse:summary`| consolida medianas em `docs/lighthouse/RESULTADOS.md` |
+| `npm run compare`           | captura telas e gera `docs/comparacao/index.html` (Figma × app) |
 
 Relatório HTML dos testes: `npx playwright show-report`.
 

@@ -32,4 +32,4 @@ npm-debug.log*
 *.tsbuildinfo
 
 # Capturas locais de comparacao visual (nao fazem parte da entrega)
-shots/
+/shots/
