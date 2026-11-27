@@ -47,6 +47,12 @@ test('quantidade, cupom e remoção', async ({ page }) => {
   await expect(page.getByText('Seu carrinho está vazio')).toBeVisible()
 })
 
+test('visitante deslogado acessa o carrinho sem ser enviado ao login', async ({ page }) => {
+  await page.goto('/carrinho')
+  await expect(page).toHaveURL('/carrinho')
+  await expect(page.getByText('Seu carrinho está vazio')).toBeVisible()
+})
+
 test('carrinho de visitante é preservado ao autenticar', async ({ page }) => {
   await page.goto('/nft/nft_001')
   await page.getByRole('button', { name: 'Comprar', exact: true }).locator('visible=true').first().click()

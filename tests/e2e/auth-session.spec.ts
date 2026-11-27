@@ -1,5 +1,16 @@
 import { expect, test } from '@playwright/test'
 
+test('token velho no boot não sequestra a home para o login', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForFunction(() => Boolean(window.__KURIO__))
+  await page.evaluate(() => localStorage.setItem('kurio:session-token', 'sess_token_inexistente'))
+  await page.reload()
+  // permanece na home como visitante (catálogo visível, sem formulário de login)
+  await expect(page.locator('#catalogo article').first()).toBeVisible()
+  await expect(page).toHaveURL('/')
+  await expect(page.getByLabel(/^E-mail/)).toHaveCount(0)
+})
+
 test('login social simulado autentica conta de demonstração', async ({ page }) => {
   await page.goto('/entrar')
   await page.getByRole('button', { name: 'Continuar com Google' }).click()

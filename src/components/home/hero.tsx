@@ -28,7 +28,9 @@ export function Hero({
     >
       <div className="grid gap-6 rounded-lg bg-surface p-5 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-10 lg:bg-transparent lg:p-0">
         <div>
-          <p className="text-[10px] tracking-[0.18em] text-content-muted lg:text-[11px]">
+          {/* Medidas do Dev Mode: Body/14 Medium, line-height 16px,
+              letter-spacing 10%, color/foreground #F5F1EB. */}
+          <p className="text-sm leading-4 font-medium tracking-[0.1em] text-content">
             Bem-vindo à Kurio
           </p>
           <h1

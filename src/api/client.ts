@@ -24,12 +24,20 @@ http.interceptors.response.use(undefined, (error: unknown) => {
 
     /**
      * Sessão expirada durante a navegação: limpa o token local e leva ao
-     * login preservando o contexto para retomada (requisito de conta/sessão).
+     * login preservando o contexto para retomada.
+     *
+     * Exceção: o próprio probe de sessão (`GET /auth/session`) no boot. Se ele
+     * retorna 401 (token velho no localStorage), o usuário apenas continua
+     * como visitante na página em que está — abrir o site não pode jogar
+     * ninguém para a tela de login.
      */
-    if (error.response?.status === 401 && !window.location.pathname.startsWith('/entrar')) {
+    if (error.response?.status === 401) {
       window.localStorage.removeItem('kurio:session-token')
-      const context = window.location.pathname + window.location.search
-      window.location.assign(`/entrar?redirect=${encodeURIComponent(context)}`)
+      const isSessionProbe = String(error.config?.url ?? '').includes('/auth/session')
+      if (!isSessionProbe && !window.location.pathname.startsWith('/entrar')) {
+        const context = window.location.pathname + window.location.search
+        window.location.assign(`/entrar?redirect=${encodeURIComponent(context)}`)
+      }
     }
     throw new ApiError(
       body?.code ?? (timedOut ? 'timeout' : 'network_error'),
