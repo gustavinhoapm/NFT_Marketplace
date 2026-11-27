@@ -2,7 +2,7 @@ import type { Profile, Wallet } from '@/contracts/profile'
 
 /**
  * Usuários do mock. As senhas NÃO ficam em claro: guardamos apenas o SHA-256 de
- * `kurio::<senha>`, calculado fora do código (requisito A18).
+ * `kurio::<senha>`, calculado fora do código.
  *
  * Credenciais (vão no README):
  *   gustavo@kurio.test / kurio1234

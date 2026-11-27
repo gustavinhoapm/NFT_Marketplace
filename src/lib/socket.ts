@@ -21,7 +21,7 @@ let socketToken: string | null = null
 
 /**
  * Uma única conexão por aba. Troca de usuário reconecta com o token novo,
- * encerrando a subscription da sessão anterior (A9).
+ * encerrando a subscription da sessão anterior.
  */
 export function getSocket(): KurioSocket {
   const token = getSessionToken()

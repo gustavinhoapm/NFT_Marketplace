@@ -1066,7 +1066,7 @@ class MockDatabase {
 
   /**
    * Fusão visitor → conta no login. O carrinho do visitante é preservado e
-   * limitado pelo estoque atual (K5).
+   * limitado pelo estoque atual.
    */
   mergeGuestCart(guestId: string, userId: string): number {
     const guestKey = `g:${guestId}`
@@ -1304,7 +1304,7 @@ class MockDatabase {
       .map((order) => structuredClone(order))
   }
 
-  /** Dispara uma transição manual para testes de reconexão (M29). */
+  /** Dispara uma transição manual para testes de reconexão. */
   forceOrderStatus(userId: string, orderId: string, status: OrderStatus): Order {
     this.getOrder(userId, orderId)
     if (status === 'confirmed') {

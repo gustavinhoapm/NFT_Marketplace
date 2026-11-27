@@ -72,7 +72,7 @@ export const socketHandler = socketLink.addEventListener('connection', (connecti
 
 /**
  * Única ponte entre mutações do servidor simulado e o socket. `nft.updated` é
- * público; `order.updated` só vai para o dono do pedido (E4).
+ * público; `order.updated` só vai para o dono do pedido.
  */
 db.subscribe((event) => {
   trackEvent(event)

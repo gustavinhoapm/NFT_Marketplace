@@ -3,7 +3,7 @@ import Decimal from 'decimal.js'
 import type { EthAmount } from '@/contracts/common'
 
 /**
- * Valores em ETH trafegam como string decimal (requisito K12).
+ * Valores em ETH trafegam como string decimal, nunca como number.
  * Nunca usar `number` para dinheiro: 0.1 + 0.2 !== 0.3 em ponto flutuante, e o
  * total do pedido precisa fechar centavo por centavo com a resposta da API.
  *

@@ -114,6 +114,35 @@ cliente descarta duplicatas e versões antigas antes de tocar o cache.
 - O seletor de edição no detalhe usa chips (frame) em vez de dropdown; a
   quantidade tem limite pelo estoque da edição.
 
+## Identidade visual (tokens)
+
+Valores amostrados dos frames exportados (`docs/figma/`); vivem em
+`src/styles/globals.css` (@theme do Tailwind 4).
+
+| Token            | Hex       | Uso                                   |
+| ---------------- | --------- | ------------------------------------- |
+| `ink`            | `#140D0A` | fundo da página                       |
+| `surface`        | `#241612` | cards, sidebar, footer, modal         |
+| `coffee`         | `#38220F` | faixas internas, input da newsletter  |
+| `line`           | `#3F2319` | bordas e divisórias                   |
+| `accent`         | `#D28A4C` | botões primários, preços, ativos      |
+| `accent-hover`   | `#E89B55` | hover do accent                       |
+| `accent-muted`   | `#7E532F` | bordas de hover                       |
+| `content`        | `#F5F1EB` | texto principal                       |
+| `content-muted`  | `#BDB8B3` | texto secundário                      |
+| `content-subtle` | `#A49D96` | terciário (clareado p/ contraste AA)  |
+| `cream`          | `#FDF2DA` | moldura das artes                     |
+| `sand`           | `#CFB28C` | subtítulo do Diário da Cunhagem       |
+| `danger`/`success`| `#D4574A`/`#7FA650` | erros / confirmado          |
+
+Tipografia: pilha monoespaçada `Space Mono → ui-monospace → Cascadia Mono →
+Consolas` (o frame é monoespaçado; o arquivo original da fonte não acompanha o
+export — ver `docs/ASSETS.md`). Títulos com tracking largo; corpo 11–12px no
+desktop e mínimo 12px no mobile (ajuste de legibilidade documentado abaixo).
+Raios: cards 10px, hero/banners 14px, botões 6px (CTAs mobile pill). Header
+56px; bottom nav mobile 64px + FAB central. Conferência rápida:
+`npm run compare` gera `docs/comparacao/index.html` (Figma × app lado a lado).
+
 ## Acessibilidade e performance: ajustes e justificativas
 
 - **Legibilidade mobile:** os frames usam textos de 9–11px. Em viewports

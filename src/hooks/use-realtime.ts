@@ -15,7 +15,7 @@ import { getSessionToken } from '@/lib/session'
 const seenIds = new Set<string>()
 const versions = new Map<string, number>()
 
-/** Descarta duplicatas e eventos antigos antes de tocar no cache (W6-W8). */
+/** Descarta duplicatas e eventos antigos antes de tocar no cache. */
 function shouldApply(event: RealtimeEnvelope<RealtimeEventName, unknown>): boolean {
   if (seenIds.has(event.id)) return false
   seenIds.add(event.id)
@@ -53,7 +53,7 @@ export function useRealtime(): void {
     }
 
     /**
-     * Reconciliação pós-reconexão (W9): eventos perdidos enquanto o socket
+     * Reconciliação pós-reconexão: eventos perdidos enquanto o socket
      * esteve fora são compensados recarregando os recursos ativos via REST.
      */
     const onConnect = () => {

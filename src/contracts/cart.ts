@@ -8,7 +8,7 @@ export interface Coupon {
 
 /**
  * Totais sempre calculados pelo servidor simulado. O cliente apenas exibe.
- * O teste E2E 5 e o critério "coerentes com a resposta da API" dependem disso.
+ * Os testes de carrinho dependem disso.
  */
 export interface CartTotals {
   subtotalEth: EthAmount
@@ -35,7 +35,7 @@ export interface CartItem {
 }
 
 /**
- * Cotação: a referência para finalizar o pedido (requisito K14).
+ * Cotação: a referência para finalizar o pedido.
  * `quoteId` + `quotedAt` permitem que o checkout detecte cotação desatualizada.
  */
 export interface Cart {

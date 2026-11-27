@@ -339,7 +339,7 @@ export const restHandlers = [
     }),
   ),
 
-  // ------------------------------------------------------------ cenários (M11)
+  // ------------------------------------------------------------ cenários
 
   http.get('/api/mock/config', async () =>
     respond(() => HttpResponse.json(getConfig())),

@@ -5,7 +5,7 @@
  * e confirmados contra as variáveis do Dev Mode (color/ink = #140D0A).
  *
  * Nomenclatura: os nomes finais devem espelhar as variáveis do Figma.
- * Mapeamento documentado em docs/DESIGN.md.
+ * Mapeamento documentado em ARCHITECTURE.md (seção "Identidade visual").
  */
 @theme {
   /* Superfícies */
@@ -78,7 +78,7 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Foco visível obrigatório (requisito U12). Nunca remover sem substituto. */
+  /* Foco visível obrigatório (acessibilidade). Nunca remover sem substituto. */
   :focus-visible {
     outline: 2px solid var(--color-accent);
     outline-offset: 2px;
@@ -103,7 +103,7 @@
   }
 }
 
-/* Respeita a preferência do sistema (requisito U10). */
+/* Respeita a preferência do sistema por movimento reduzido. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

@@ -1,7 +1,7 @@
 /**
  * Gerador determinístico. Os fixtures usam PRNG com semente fixa para que
  * catálogo, paginação e snapshots de regressão visual sejam sempre os mesmos
- * (requisito X40: baselines com dados estáveis).
+ * (baselines de regressão visual exigem dados estáveis).
  */
 export function mulberry32(seed: number) {
   let a = seed >>> 0
