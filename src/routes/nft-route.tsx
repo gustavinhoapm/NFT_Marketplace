@@ -283,7 +283,18 @@ function NftPage() {
 
             <div className="mt-6 flex flex-wrap items-center gap-4">
               {stepper}
-              <div className="flex flex-1 justify-end gap-3">
+              <div className="flex flex-1 flex-wrap justify-end gap-3">
+                {/* Estado não desenhado no frame desktop: o enunciado exige
+                    "adicionar itens" ao carrinho como ação própria. */}
+                <Button
+                  variant="outline"
+                  disabled={soldOut || add.isPending}
+                  onClick={() => submit(false)}
+                  className="rounded-sm"
+                >
+                  <ShoppingBag className="h-4 w-4" />
+                  Adicionar ao carrinho
+                </Button>
                 <Button disabled={soldOut || add.isPending} onClick={() => submit(true)} className="rounded-sm px-8">
                   Comprar
                 </Button>
@@ -406,16 +417,20 @@ function NftPage() {
           </p>
         </div>
         <div className="mt-3 flex gap-3">
-          <Button full size="lg" className="rounded-full" disabled={soldOut || add.isPending} onClick={() => submit(false)}>
+          <Button full size="lg" className="rounded-full" disabled={soldOut || add.isPending} onClick={() => submit(true)}>
             Comprar NFT
           </Button>
-          <Link
-            to="/carrinho"
-            aria-label="Ir para o carrinho"
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-coffee text-accent"
+          {/* O botão circular de carrinho do frame mobile = adicionar sem
+            ir ao checkout (o bottom nav já leva ao carrinho). */}
+          <Button
+            size="lg"
+            aria-label="Adicionar ao carrinho"
+            disabled={soldOut || add.isPending}
+            onClick={() => submit(false)}
+            className="h-12 w-12 shrink-0 rounded-full bg-coffee text-accent hover:bg-coffee hover:text-accent-hover"
           >
             <ShoppingBag className="h-4 w-4" />
-          </Link>
+          </Button>
         </div>
       </div>
     </>

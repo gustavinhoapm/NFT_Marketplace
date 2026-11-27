@@ -40,6 +40,12 @@ test('compra completa do catálogo ao recibo confirmado', async ({ page }) => {
 
   // recibo reproduz o snapshot e o carrinho perde apenas o item comprado
   await expect(page.getByText('Golden Beat #207')).toBeVisible()
+
+  // explorador simulado abre com bloco numérico (nunca NaN)
+  await page.getByRole('button', { name: 'Ver no Etherscan' }).click()
+  await expect(page.getByRole('dialog')).toBeVisible()
+  await expect(page.getByRole('dialog').getByText(/NaN/)).toHaveCount(0)
+  await expect(page.getByText(/^18\.\d{3}\.\d{3}$/)).toBeVisible()
   await page.goto('/carrinho')
   await expect(page.getByText('Seu carrinho está vazio')).toBeVisible()
 })

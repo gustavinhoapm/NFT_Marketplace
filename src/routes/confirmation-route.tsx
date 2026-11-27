@@ -51,8 +51,9 @@ function ConfirmationPage() {
   const confirmed = order.status === 'confirmed'
   const declined = order.status === 'declined'
   // "Bloco" determinístico derivado do hash: explorador é simulado (enunciado).
+  // O hash da simulação é base-36 (uid), então o parse usa radix 36.
   const blockNumber = order.transactionHash
-    ? 18_000_000 + (parseInt(order.transactionHash.slice(2, 10), 16) % 900_000)
+    ? 18_000_000 + (parseInt(order.transactionHash.slice(2, 10), 36) % 900_000)
     : null
 
   return (
