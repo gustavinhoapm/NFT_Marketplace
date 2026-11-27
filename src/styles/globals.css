@@ -28,8 +28,9 @@
 
   /* Arte */
   --color-cream: #fdf2da;
-  /* Tom de apoio medido no frame (subtítulo do Diário da Cunhagem). */
+  /* Tons de apoio medidos no Dev Mode do Figma. */
   --color-sand: #cfb28c;
+  --color-tan: #b39463;
 
   /* Semânticas */
   --color-danger: #d4574a;

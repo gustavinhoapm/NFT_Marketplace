@@ -78,22 +78,24 @@ function CartPage() {
 
   const summary = (
     <aside className="h-fit rounded-md border border-line bg-surface p-5 lg:border-none lg:bg-transparent lg:p-0">
-      <h2 className="hidden text-sm font-bold tracking-wide lg:block">Resumo da carteira</h2>
+      <h2 className="hidden border-b border-accent pb-3 text-sm font-bold tracking-wide lg:block">
+        Resumo da carteira
+      </h2>
 
       <form onSubmit={submitCoupon} className="mt-4">
         <Label htmlFor="coupon" className="hidden lg:block">Código promocional</Label>
-        <div className="flex">
+        <div className="flex items-stretch">
           <Input
             id="coupon"
             value={code}
             onChange={(event) => setCode(event.target.value.toUpperCase())}
             placeholder="Digite o código promocional..."
             invalid={applyCoupon.error instanceof ApiError}
-            className="rounded-r-none"
+            className="h-11 rounded-r-none"
           />
           <Button
             type="submit"
-            className="rounded-l-none"
+            className="h-11 rounded-l-none px-6"
             disabled={applyCoupon.isPending || !code}
           >
             Aplicar
@@ -148,7 +150,7 @@ function CartPage() {
       >
         Conectar e finalizar
       </Button>
-      <Link to="/" className="mt-4 block text-center text-xs text-content-muted hover:text-accent">
+      <Link to="/" className="mt-4 block text-center text-xs font-bold text-accent-hover hover:text-accent">
         Continuar explorando
       </Link>
     </aside>
@@ -213,15 +215,14 @@ function CartPage() {
                         <Link to="/nft/$nftId" params={{ nftId: item.nftId }} className="block truncate text-xs font-bold hover:text-accent">
                           {item.name}
                         </Link>
-                        <p className="mt-1 text-[10px] text-content-subtle">ID do token: {item.tokenId}</p>
-                        <p className="mt-1 text-[10px] text-content-subtle">Edição: {item.editionLabel}</p>
-                        <p className="mt-2 text-xs font-bold text-accent lg:hidden">
+                        <p className="mt-1 text-[10px] text-tan">ID do token: {item.tokenId}</p>
+                        <p className="mt-2 text-xs font-bold text-sand lg:hidden">
                           {formatEth(item.lineTotalEth)} ETH
                         </p>
                       </div>
                     </div>
 
-                    <p className="mt-3 hidden text-xs font-bold lg:mt-0 lg:block">
+                    <p className="mt-3 hidden text-xs font-bold text-sand lg:mt-0 lg:block">
                       {formatEth(item.unitPriceEth)} ETH
                     </p>
 
@@ -247,7 +248,7 @@ function CartPage() {
                       </button>
                     </div>
 
-                    <p className="hidden text-xs font-bold text-accent lg:block">
+                    <p className="hidden text-xs font-bold text-sand lg:block">
                       {formatEth(item.lineTotalEth)} ETH
                     </p>
 
@@ -256,9 +257,9 @@ function CartPage() {
                       aria-label={`Remover ${item.name} do carrinho`}
                       disabled={remove.isPending}
                       onClick={() => remove.mutate(item.id, { onError: (error) => toast.error(errorMessage(error)) })}
-                      className="mt-3 ml-auto flex h-8 w-8 items-center justify-center rounded-full text-content-subtle hover:bg-coffee hover:text-danger lg:mt-0"
+                      className="mt-3 ml-auto flex h-8 w-8 items-center justify-center rounded-full text-tan hover:bg-coffee hover:text-danger lg:mt-0"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-4 w-4" strokeWidth={1.5} />
                     </button>
                   </li>
                 ))}

@@ -1,5 +1,5 @@
 import { createRoute, Link, useNavigate } from '@tanstack/react-router'
-import { Heart, Minus, Plus, ShoppingBag, Star, ZoomIn } from 'lucide-react'
+import { Heart, Mail, Minus, Plus, ShoppingBag, Star, ZoomIn } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -8,6 +8,7 @@ import { MobileTopBar } from '@/components/layout/mobile-top-bar'
 import { NftCard } from '@/components/nft-card'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
+import { LinkedinIcon, TwitterIcon } from '@/components/ui/social-icons'
 import type { Network } from '@/contracts/common'
 import type { CollectionId, NftListQuery } from '@/contracts/nft'
 import { ApiError, errorMessage } from '@/lib/api-error'
@@ -190,16 +191,16 @@ function NftPage() {
   const metaRows = (
     <dl className="space-y-2.5 text-[11px]">
       <div className="flex gap-2">
-        <dt className="text-content-muted">ID do token:</dt>
-        <dd className="text-accent">{nft.tokenId}</dd>
+        <dt className="text-tan">ID do token:</dt>
+        <dd className="text-tan">{nft.tokenId}</dd>
       </div>
       <div className="flex gap-2">
-        <dt className="text-content-muted">Coleção:</dt>
-        <dd className="text-accent">{nft.collectionName}</dd>
+        <dt className="text-tan">Coleção:</dt>
+        <dd className="text-tan">{nft.collectionName}</dd>
       </div>
       <div className="flex gap-2">
-        <dt className="text-content-muted">Atributos:</dt>
-        <dd className="text-accent">{nft.attributes.join(', ')}</dd>
+        <dt className="text-tan">Atributos:</dt>
+        <dd className="text-tan">{nft.attributes.join(', ')}</dd>
       </div>
     </dl>
   )
@@ -261,11 +262,11 @@ function NftPage() {
           {/* Informações */}
           <div>
             <h1 className="text-2xl font-bold tracking-wide lg:text-3xl">{nft.name}</h1>
-            <div className="mt-3 flex flex-wrap items-center gap-4 border-b border-line pb-4">
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-4 border-b border-line pb-4">
               <p className="text-lg font-bold text-accent">
                 {formatEth(edition?.priceEth ?? nft.editions[0].priceEth)} ETH
               </p>
-              <p className="flex items-center gap-2 text-[11px] text-content-muted">
+              <p className="ml-auto flex items-center gap-2 text-[11px] text-sand">
                 <span aria-hidden="true" className="flex gap-0.5 text-accent">
                   {Array.from({ length: 5 }).map((_, index) => (
                     <Star key={index} className="h-3 w-3" fill={index < ratingStars ? 'currentColor' : 'none'} />
@@ -275,8 +276,8 @@ function NftPage() {
               </p>
             </div>
 
-            <h2 className="mt-5 text-xs font-bold">Sobre este NFT:</h2>
-            <p className="mt-2 text-[11px] leading-relaxed text-content-muted">{nft.description}</p>
+            <h2 className="mt-5 text-sm font-bold text-sand">Sobre este NFT:</h2>
+            <p className="mt-2 text-sm leading-6 font-normal text-sand">{nft.description}</p>
 
             <h2 className="mt-5 text-xs font-bold">Edição:</h2>
             <div className="mt-2">{editionChips}</div>
@@ -302,18 +303,33 @@ function NftPage() {
 
             <div className="mt-6">{metaRows}</div>
 
-            <p className="mt-5 flex items-center gap-3 text-[11px] font-bold">
-              Compartilhar este NFT:
-              <button type="button" onClick={() => void share()} className="rounded-sm border border-line px-2 py-1 text-content-muted hover:border-accent hover:text-accent">
-                in
+            <div className="mt-5 flex items-center gap-3 text-[11px] font-bold">
+              <span>Compartilhar este NFT:</span>
+              <button
+                type="button"
+                onClick={() => void share()}
+                aria-label="Compartilhar no LinkedIn"
+                className="p-0 text-sand transition-colors hover:text-accent"
+              >
+                <LinkedinIcon className="h-[15px] w-[15px]" />
               </button>
-              <button type="button" onClick={() => void share()} className="rounded-sm border border-line px-2 py-1 text-content-muted hover:border-accent hover:text-accent">
-                ✉
+              <button
+                type="button"
+                onClick={() => void share()}
+                aria-label="Compartilhar por e-mail"
+                className="p-0 text-sand transition-colors hover:text-accent"
+              >
+                <Mail className="h-4 w-4" strokeWidth={2.5} />
               </button>
-              <button type="button" onClick={() => void share()} className="rounded-sm border border-line px-2 py-1 text-content-muted hover:border-accent hover:text-accent">
-                x
+              <button
+                type="button"
+                onClick={() => void share()}
+                aria-label="Compartilhar no Twitter"
+                className="p-0 text-sand transition-colors hover:text-accent"
+              >
+                <TwitterIcon className="h-4 w-4" />
               </button>
-            </p>
+            </div>
           </div>
         </div>
 

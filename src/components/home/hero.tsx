@@ -35,7 +35,8 @@ export function Hero({
           </p>
           <h1
             id="hero-title"
-            className="mt-3 text-xl leading-[1.4] font-bold tracking-[0.06em] lg:mt-4 lg:text-[40px] lg:leading-[58px]"
+            /* Dev Mode desktop: 43px / Bold 700 / line-height 70px / tracking 0% */
+            className="mt-3 text-xl leading-[1.4] font-bold tracking-normal lg:mt-4 lg:text-[43px] lg:leading-[70px]"
           >
             <span className="hidden lg:inline">
               SEJA DONO DO FUTURO
@@ -48,7 +49,7 @@ export function Hero({
               CULTURA DIGITAL
             </span>
           </h1>
-          <p className="mt-4 max-w-md text-[11px] leading-relaxed text-content-muted lg:text-xs">
+          <p className="mt-4 max-w-md text-[11px] leading-relaxed text-sand lg:text-xs">
             Descubra NFTs selecionados de criadores emergentes e consagrados. Colecione
             arte digital rara, apoie artistas e tenha uma parte da cultura da internet.
           </p>

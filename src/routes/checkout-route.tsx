@@ -34,7 +34,8 @@ export const checkoutRoute = createRoute({
 })
 
 const NETWORKS: Network[] = ['ethereum', 'polygon', 'solana']
-const WALLET_TYPES = Object.keys(WALLET_TYPE_LABELS) as WalletType[]
+/** WalletConnect primeiro, como no frame. */
+const CHECKOUT_WALLET_TYPES: WalletType[] = ['walletconnect', 'metamask', 'coinbase']
 const TYPE_LETTER: Record<WalletType, string> = {
   walletconnect: 'W',
   metamask: 'M',
@@ -232,7 +233,7 @@ function CheckoutPage() {
 
   const typeCards = (
     <div className="space-y-3" role="radiogroup" aria-label="Carteira e rede">
-      {WALLET_TYPES.map((type) => (
+      {CHECKOUT_WALLET_TYPES.map((type) => (
         <button
           key={type}
           type="button"
@@ -240,23 +241,23 @@ function CheckoutPage() {
           aria-checked={walletType === type}
           onClick={() => setWalletType(type)}
           className={cn(
-            'flex w-full items-center gap-3 rounded-md border bg-surface p-3.5 text-left',
+            'flex w-full items-center gap-3 rounded-md border bg-ink p-3.5 text-left',
             walletType === type ? 'border-accent' : 'border-line hover:border-accent-muted',
           )}
         >
+          <span
+            aria-hidden="true"
+            className={cn(
+              'flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-accent',
+              walletType === type ? 'bg-accent' : 'bg-transparent',
+            )}
+          >
+            {walletType === type && <span className="h-1.5 w-1.5 rounded-full bg-ink" />}
+          </span>
           <span className="flex h-9 w-9 items-center justify-center rounded-full bg-coffee text-xs font-bold text-accent">
             {TYPE_LETTER[type]}
           </span>
           <span className="flex-1 text-xs font-bold">{WALLET_TYPE_LABELS[type]}</span>
-          <span
-            aria-hidden="true"
-            className={cn(
-              'flex h-4 w-4 items-center justify-center rounded-full border',
-              walletType === type ? 'border-accent' : 'border-content-subtle',
-            )}
-          >
-            {walletType === type && <span className="h-2 w-2 rounded-full bg-accent" />}
-          </span>
         </button>
       ))}
     </div>
@@ -274,9 +275,9 @@ function CheckoutPage() {
             <img src={item.imageUrl} alt="" className="h-14 w-14 rounded-sm object-cover" />
             <div className="min-w-0 flex-1">
               <p className="truncate text-xs font-bold">
-                {item.name} <span className="font-normal text-content-muted">(x {item.quantity})</span>
+                {item.name} <span className="font-normal text-tan">(x {item.quantity})</span>
               </p>
-              <p className="mt-0.5 text-[10px] text-content-subtle">ID do token: {item.tokenId}</p>
+              <p className="mt-0.5 text-[10px] text-tan">ID do token: {item.tokenId}</p>
             </div>
             <p className="text-xs font-bold text-accent">{formatEth(item.lineTotalEth)} ETH</p>
           </li>
@@ -284,9 +285,9 @@ function CheckoutPage() {
       </ul>
       <p className="mt-4 text-center text-[11px] text-content-muted">
         Tem um código promocional?{' '}
-        <Link to="/carrinho" className="text-accent hover:underline">Aplique aqui</Link>
+        <Link to="/carrinho" className="text-sand hover:text-accent hover:underline">Aplique aqui</Link>
       </p>
-      <dl className="mt-4 space-y-2.5 text-xs">
+      <dl className="mt-4 space-y-2 text-xs">
         <div className="flex justify-between">
           <dt className="text-content-muted">Subtotal</dt>
           <dd>{formatEth(cart?.totals.subtotalEth ?? '0')} ETH</dd>
@@ -297,12 +298,10 @@ function CheckoutPage() {
         </div>
         <div className="flex justify-between">
           <dt className="text-content-muted">Taxa de rede</dt>
-          <dd className="text-right">
-            {formatEth(cart?.totals.networkFeeEth ?? '0')} ETH
-            <span className="block text-[10px] text-accent">Taxa estimada</span>
-          </dd>
+          <dd>{formatEth(cart?.totals.networkFeeEth ?? '0')} ETH</dd>
         </div>
-        <div className="flex justify-between border-t border-line pt-3 text-sm font-bold">
+        <p className="text-center text-[10px] text-accent">Taxa estimada</p>
+        <div className="flex justify-between border-t border-line pt-2 text-sm font-bold">
           <dt>Total</dt>
           <dd className="text-accent">{formatEth(cart?.totals.totalEth ?? '0')} ETH</dd>
         </div>
@@ -403,7 +402,7 @@ function CheckoutPage() {
                 <Label htmlFor="wallet-type" required>Tipo de carteira</Label>
                 <Select id="wallet-type" value={walletType} onChange={(e) => setWalletType(e.target.value as WalletType)} invalid={Boolean(fieldError.walletType)}>
                   <option value="">Selecione uma carteira</option>
-                  {WALLET_TYPES.map((item) => <option key={item} value={item}>{WALLET_TYPE_LABELS[item]}</option>)}
+                  {CHECKOUT_WALLET_TYPES.map((item) => <option key={item} value={item}>{WALLET_TYPE_LABELS[item]}</option>)}
                 </Select>
                 <FieldError>{fieldError.walletType}</FieldError>
               </div>
@@ -430,18 +429,27 @@ function CheckoutPage() {
             </div>
 
             <label className="mt-6 flex items-center gap-2 text-xs">
+              {/* Anel laranja do frame, não o quadrado nativo do navegador. */}
               <input
                 type="checkbox"
                 checked={useOtherWallet}
-                onChange={(e) => setUseOtherWallet(e.target.checked)}
-                className="h-4 w-4 rounded-full border-line accent-accent"
+                onChange={(e) => {
+                  setUseOtherWallet(e.target.checked)
+                  if (!e.target.checked && activeWallet) setWalletAddress(activeWallet.address)
+                }}
+                className="h-4 w-4 appearance-none rounded-full border-2 border-accent bg-transparent checked:bg-accent checked:shadow-[inset_0_0_0_3px_var(--color-ink)]"
               />
               Usar outra carteira?
             </label>
 
             <div className="mt-6">
               <Label htmlFor="note">Observação do colecionador (opcional)</Label>
-              <Textarea id="note" value={note} onChange={(e) => setNote(e.target.value)} />
+              <Textarea
+                id="note"
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                className="h-[179px] w-full max-w-[350px] resize-none"
+              />
             </div>
 
           </section>

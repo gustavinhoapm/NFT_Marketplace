@@ -92,7 +92,7 @@ export function SiteFooter() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 placeholder="Digite seu e-mail.."
-                className="h-9 min-w-0 flex-1 rounded-sm border border-line bg-coffee px-3 text-[11px] placeholder:text-sand focus:border-accent focus:outline-none"
+                className="h-9 min-w-0 flex-1 rounded-sm border border-line bg-coffee px-3 text-[11px] placeholder:text-tan focus:border-accent focus:outline-none"
               />
               <button type="submit" className="rounded-sm bg-accent px-4 py-2 text-[11px] font-bold text-ink hover:bg-accent-hover">
                 Enviar
@@ -108,10 +108,10 @@ export function SiteFooter() {
         </div>
 
         <div className="grid gap-4 bg-coffee px-8 py-5 text-[11px] sm:grid-cols-4">
-          <p className="font-bold tracking-[0.22em]">KURIO</p>
-          <p className="text-content-muted">Feito para colecionadores, criadores e cultura</p>
-          <p className="text-content-muted">contato@email.com</p>
-          <p className="text-content-muted">+55 11 4002 8922</p>
+          <p className="font-bold tracking-[0.22em] sm:text-left">KURIO</p>
+          <p className="text-content-muted sm:text-center">Feito para colecionadores, criadores e cultura</p>
+          <p className="text-content-muted sm:text-center">contato@email.com</p>
+          <p className="text-content-muted sm:text-center">+55 11 4002 8922</p>
         </div>
 
         <div className="grid gap-8 bg-surface px-8 py-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -164,7 +164,7 @@ export function SiteFooter() {
                     to="/em-breve"
                     search={{ area: 'redes' }}
                     aria-label={`${label} (fora do escopo desta demonstração)`}
-                    className="flex h-8 w-8 items-center justify-center rounded-sm border border-line text-content-muted hover:border-accent hover:text-accent"
+                    className="flex h-[30px] w-[30px] items-center justify-center rounded-[4px] border border-accent text-accent hover:bg-accent hover:text-ink"
                   >
                     <Icon className="h-3.5 w-3.5" />
                   </Link>
@@ -172,9 +172,10 @@ export function SiteFooter() {
               ))}
             </ul>
             <h2 className="mt-6 text-xs font-bold tracking-wide">Carteiras compatíveis</h2>
-            <ul className="mt-3 flex flex-wrap gap-2">
-              {['METAMASK', 'WALLETCONNECT', 'COINBASE'].map((wallet) => (
-                <li key={wallet} className="rounded-sm bg-coffee px-2 py-1 text-[9px] font-bold tracking-wider text-content-muted">
+            <ul className="mt-3 inline-flex items-center gap-1.5 rounded-sm bg-coffee px-2 py-1.5 text-[8px] font-bold tracking-wider whitespace-nowrap text-tan">
+              {['METAMASK', 'WALLETCONNECT', 'COINBASE'].map((wallet, index) => (
+                <li key={wallet} className="flex items-center gap-1.5">
+                  {index > 0 && <span aria-hidden="true" className="text-accent">•</span>}
                   {wallet}
                 </li>
               ))}

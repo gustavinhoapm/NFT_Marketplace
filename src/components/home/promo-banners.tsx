@@ -30,7 +30,7 @@ export function PromoBanners() {
           <img src={banner.image} alt="" className="h-40 w-full object-cover sm:h-full" />
           <div className="flex flex-col justify-center p-6">
             <h2 className="text-sm leading-relaxed font-bold tracking-wide">{banner.title}</h2>
-            <p className="mt-3 text-[11px] leading-relaxed text-content-muted">{banner.text}</p>
+            <p className="mt-3 text-[11px] leading-relaxed text-sand">{banner.text}</p>
             <Link
               to="/"
               search={banner.search}

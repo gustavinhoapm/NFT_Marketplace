@@ -153,17 +153,17 @@ function HomePage() {
 
             {featured && (
               <div className="mt-6 overflow-hidden rounded-md border border-line bg-surface">
-                <p className="bg-coffee px-4 py-3 text-[11px] font-bold tracking-[0.14em] text-accent uppercase">
+                <p className="px-4 pt-3 text-[11px] font-bold tracking-[0.14em] text-accent uppercase">
                   NFT em destaque
                 </p>
-                <p className="px-4 py-2 text-[11px] font-bold tracking-[0.14em] uppercase">
+                <p className="px-4 pt-1 pb-2 text-[11px] font-bold tracking-[0.14em] uppercase">
                   Oferta limitada
                 </p>
-                <Link to="/nft/$nftId" params={{ nftId: featured.id }} className="block p-2 pt-0">
+                <Link to="/nft/$nftId" params={{ nftId: featured.id }} className="block">
                   <img
                     src={featured.imageUrl}
                     alt={`NFT em destaque: ${featured.name}`}
-                    className="aspect-square w-full rounded-sm object-cover"
+                    className="aspect-square w-full object-cover"
                   />
                 </Link>
               </div>

@@ -57,13 +57,13 @@ export function Journal() {
             <article className="card-hover flex h-full flex-col overflow-hidden rounded-md border border-line bg-surface">
               <img src={post.image} alt="" className="aspect-[4/3] w-full object-cover" />
               <div className="flex flex-1 flex-col p-4">
-                <p className="flex flex-wrap gap-x-2 text-[10px] text-content-subtle">
+                <p className="flex items-center gap-x-2 overflow-hidden text-[10px] whitespace-nowrap text-content-subtle">
                   <span>{post.date}</span>
                   <span aria-hidden="true">|</span>
                   <span>{post.read}</span>
                 </p>
                 <h3 className="mt-2 text-xs leading-relaxed font-bold">{post.title}</h3>
-                <p className="mt-2 text-[11px] leading-relaxed text-content-muted">{post.excerpt}</p>
+                <p className="mt-2 text-[11px] leading-relaxed text-sand">{post.excerpt}</p>
                 <Link
                   to="/em-breve"
                   search={{ area: 'diario' }}

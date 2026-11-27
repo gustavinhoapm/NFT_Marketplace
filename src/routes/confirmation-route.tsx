@@ -59,7 +59,7 @@ function ConfirmationPage() {
   return (
     <>
       <MobileTopBar title="Confirmação de pedido" />
-      <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:py-16">
+      <main className="mx-auto max-w-[578px] px-4 py-10 sm:px-6 lg:py-16">
         <section
           aria-labelledby="receipt-title"
           className="relative overflow-hidden rounded-md border border-line bg-surface"
@@ -79,39 +79,39 @@ function ConfirmationPage() {
               <Clock aria-hidden="true" className="mx-auto h-14 w-14 animate-pulse text-accent" />
             )}
             {declined && <XCircle aria-hidden="true" className="mx-auto h-14 w-14 text-danger" />}
-            <h1 id="receipt-title" className="mt-5 text-sm font-bold tracking-wide">
+            <h1 id="receipt-title" className="mt-5 text-sm font-bold tracking-wide text-sand">
               {confirmed && 'Seus NFTs agora estão na sua carteira'}
               {order.status === 'pending' && 'Pagamento em andamento: esta página atualiza sozinha'}
               {declined && (order.failureReason ?? 'Pagamento não autorizado')}
             </h1>
           </div>
 
-          <dl className="grid grid-cols-2 gap-y-4 border-y border-line px-6 py-4 text-[11px] sm:grid-cols-4">
+          <dl className="grid grid-cols-2 gap-y-4 border-y border-accent px-6 py-4 text-[11px] text-sand sm:grid-cols-4">
             <div>
               <dt className="font-bold">ID da transação</dt>
-              <dd className="mt-1 text-content-muted">
+              <dd className="mt-1">
                 {order.transactionHash ? `${order.transactionHash.slice(0, 6)}…${order.transactionHash.slice(-4)}` : 'Aguardando…'}
               </dd>
             </div>
             <div>
               <dt className="font-bold">Data</dt>
-              <dd className="mt-1 text-content-muted">
+              <dd className="mt-1">
                 {new Date(order.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
               </dd>
             </div>
             <div>
               <dt className="font-bold">Total</dt>
-              <dd className="mt-1 text-content-muted">{formatEth(order.totals.totalEth)} ETH</dd>
+              <dd className="mt-1">{formatEth(order.totals.totalEth)} ETH</dd>
             </div>
             <div>
               <dt className="font-bold">Carteira</dt>
-              <dd className="mt-1 text-content-muted">{order.walletLabel}</dd>
+              <dd className="mt-1">{order.walletLabel}</dd>
             </div>
           </dl>
 
           <div className="px-6 py-6">
-            <h2 className="text-xs font-bold">Detalhes da transação</h2>
-            <div className="mt-4 grid grid-cols-[1fr_auto_auto] gap-4 border-b border-line pb-2 text-xs font-bold">
+            <h2 className="text-xs font-bold text-sand">Detalhes da transação</h2>
+            <div className="mt-4 grid grid-cols-[1fr_auto_auto] gap-4 border-b border-accent pb-2 text-xs font-bold text-sand">
               <span>NFTs</span>
               <span>Edições</span>
               <span>Subtotal</span>
@@ -120,13 +120,13 @@ function ConfirmationPage() {
               {order.items.map((item) => (
                 <li key={`${item.nftId}-${item.editionId}`} className="grid grid-cols-[1fr_auto_auto] items-center gap-4">
                   <span className="flex min-w-0 items-center gap-3">
-                    <img src={item.imageUrl} alt="" className="h-12 w-12 rounded-sm object-cover" />
+                    <img src={item.imageUrl} alt="" className="h-20 w-20 rounded-sm object-cover" />
                     <span className="min-w-0">
                       <span className="block truncate text-xs font-bold">{item.name}</span>
-                      <span className="block text-[10px] text-content-subtle">ID do token: {item.tokenId}</span>
+                      <span className="block text-[10px] text-sand">ID do token: {item.tokenId}</span>
                     </span>
                   </span>
-                  <span className="text-[11px] text-content-muted">(x {item.quantity})</span>
+                  <span className="text-[11px] text-sand">(x {item.quantity})</span>
                   <span className="text-xs font-bold text-accent">{formatEth(item.lineTotalEth)} ETH</span>
                 </li>
               ))}
@@ -134,16 +134,17 @@ function ConfirmationPage() {
 
             <dl className="mt-6 space-y-2 text-xs">
               <div className="flex justify-between">
-                <dt className="text-content-muted">Taxa de rede</dt>
-                <dd>{formatEth(order.totals.networkFeeEth)} ETH</dd>
+                <dt className="text-sand">Taxa de rede</dt>
+                <dd className="text-sand">{formatEth(order.totals.networkFeeEth)} ETH</dd>
               </div>
-              <div className="flex justify-between border-t border-line pt-3 text-sm font-bold">
+              <div className="flex justify-between text-sm font-bold">
                 <dt>Total</dt>
                 <dd className="text-accent">{formatEth(order.totals.totalEth)} ETH</dd>
               </div>
             </dl>
+            <div className="mt-3 border-t border-accent" />
 
-            <p className="mt-6 text-center text-[11px] leading-relaxed text-content-muted">
+            <p className="mt-5 text-center text-[11px] leading-relaxed text-sand">
               {confirmed
                 ? `Transação confirmada na rede ${order.network}. A propriedade foi transferida para sua carteira conectada e registrada na rede.`
                 : declined

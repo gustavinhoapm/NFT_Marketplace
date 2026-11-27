@@ -58,11 +58,11 @@ export function CatalogSidebar({
                   onClick={() => onChange({ collections: toggle(value.collections, facet.id) })}
                   className={cn(
                     'flex w-full items-center justify-between text-xs transition-colors',
-                    active ? 'font-bold text-accent' : 'text-content-muted hover:text-accent',
+                    active ? 'font-bold text-accent' : 'text-sand hover:text-accent',
                   )}
                 >
                   <span>{facet.label}</span>
-                  <span className="text-content-subtle">({facet.count})</span>
+                  <span className="text-tan">({facet.count})</span>
                 </button>
               </li>
             )
@@ -125,11 +125,11 @@ export function CatalogSidebar({
                   onClick={() => onChange({ networks: toggle(value.networks, facet.id) })}
                   className={cn(
                     'flex w-full items-center justify-between text-xs capitalize transition-colors',
-                    active ? 'font-bold text-accent' : 'text-content-muted hover:text-accent',
+                    active ? 'font-bold text-accent' : 'text-sand hover:text-accent',
                   )}
                 >
                   <span>{facet.id}</span>
-                  <span className="text-content-subtle">({facet.count})</span>
+                  <span className="text-tan">({facet.count})</span>
                 </button>
               </li>
             )
