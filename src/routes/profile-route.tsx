@@ -27,6 +27,37 @@ export const profileRoute = createRoute({
   component: ProfilePage,
 })
 
+/**
+ * Lê um arquivo local, recorta em "cover" e reduz para 128px antes de salvar
+ * no perfil (data URL). Evita estourar o localStorage e não envia nada para
+ * fora do navegador — coerente com a simulação local do desafio.
+ */
+async function fileToAvatar(file: File): Promise<string> {
+  const dataUrl = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result))
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(file)
+  })
+  const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+    const element = new Image()
+    element.onload = () => resolve(element)
+    element.onerror = () => reject(new Error('Imagem inválida.'))
+    element.src = dataUrl
+  })
+  const size = 128
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return dataUrl
+  const scale = Math.max(size / image.width, size / image.height)
+  const width = image.width * scale
+  const height = image.height * scale
+  ctx.drawImage(image, (size - width) / 2, (size - height) / 2, width, height)
+  return canvas.toDataURL('image/jpeg', 0.85)
+}
+
 function PasswordInput({
   id,
   label,
@@ -247,24 +278,43 @@ function ProfilePage() {
         open={avatarOpen}
         onOpenChange={setAvatarOpen}
         title="Alterar avatar"
-        description="Informe a URL pública da imagem. Upload de arquivos não faz parte desta demonstração."
+        description="Escolha um arquivo da sua máquina ou informe uma URL pública."
       >
-        <Label htmlFor="avatar-url">URL da imagem</Label>
-        <Input id="avatar-url" value={avatarDraft} onChange={(e) => setAvatarDraft(e.target.value)} placeholder="https://…" />
-        {avatarDraft && (
-          <img src={avatarDraft} alt="Prévia do avatar" className="mt-4 h-16 w-16 rounded-full border border-line object-cover" />
-        )}
-        <Button
-          full
-          className="mt-5"
-          onClick={() => {
-            setAvatarUrl(avatarDraft)
-            setAvatarOpen(false)
-            toast.info('Lembre de salvar o perfil para aplicar o avatar.')
-          }}
-        >
-          Usar esta imagem
-        </Button>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="avatar-file">Arquivo da sua máquina</Label>
+            <input
+              id="avatar-file"
+              type="file"
+              accept="image/*"
+              onChange={(event) => {
+                const file = event.target.files?.[0]
+                if (file) void fileToAvatar(file).then(setAvatarDraft)
+              }}
+              className="block w-full text-xs text-content-muted file:mr-3 file:rounded-sm file:border-0 file:bg-accent file:px-4 file:py-2 file:text-xs file:font-bold file:text-ink"
+            />
+            <p className="mt-2 text-[10px] text-content-subtle">
+              A imagem é reduzida para 128px e armazenada localmente (sem upload real).
+            </p>
+          </div>
+          <div>
+            <Label htmlFor="avatar-url">Ou URL pública</Label>
+            <Input id="avatar-url" value={avatarDraft} onChange={(e) => setAvatarDraft(e.target.value)} placeholder="https://…" />
+          </div>
+          {avatarDraft && (
+            <img src={avatarDraft} alt="Prévia do avatar" className="h-16 w-16 rounded-full border border-line object-cover" />
+          )}
+          <Button
+            full
+            onClick={() => {
+              setAvatarUrl(avatarDraft)
+              setAvatarOpen(false)
+              toast.info('Lembre de salvar o perfil para aplicar o avatar.')
+            }}
+          >
+            Usar esta imagem
+          </Button>
+        </div>
       </Dialog>
     </main>
   )

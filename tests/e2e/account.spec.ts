@@ -85,8 +85,17 @@ test('edição de perfil persiste após refresh e valida erros da API', async ({
   await page.getByRole('button', { name: 'Salvar', exact: true }).click()
   await expect(page.getByText('Perfil atualizado.')).toBeVisible()
 
+  // avatar por arquivo local: reduz para 128px e persiste após refresh
+  await page.getByRole('button', { name: 'Alterar' }).click()
+  await page.setInputFiles('#avatar-file', 'public/assets/nft/ape-sunglasses.jpg')
+  await page.getByAltText('Prévia do avatar').waitFor()
+  await page.getByRole('button', { name: 'Usar esta imagem' }).click()
+  await page.getByRole('button', { name: 'Salvar', exact: true }).click()
+  await expect(page.getByText('Perfil atualizado.')).toBeVisible()
+
   await page.reload()
   await expect(page.getByLabel(/^Nome de exibição/)).toHaveValue('Gustavo Editado')
+  await expect(page.getByAltText('Avatar atual')).toHaveAttribute('src', /^data:image\/jpeg/)
 })
 
 test('senha com confirmação divergente é barrada no cliente', async ({ page }) => {
