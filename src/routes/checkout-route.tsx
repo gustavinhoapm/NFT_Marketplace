@@ -520,7 +520,9 @@ function CheckoutPage() {
                     </button>
                   )}
                   <span className="text-[11px] text-content-subtle">
-                    {connected ? 'Sessão da carteira ativa nesta aba.' : 'Conexão simulada, sem assinatura real.'}
+                    {connected
+                      ? 'Sessão da carteira ativa nesta aba. Não altera o pedido: a carteira destinatária é a selecionada em “Carteira e rede”.'
+                      : 'Conexão simulada, sem assinatura real. Não é obrigatória: a carteira destinatária é a selecionada em “Carteira e rede”.'}
                   </span>
                 </div>
                 <label className="flex items-center gap-2 text-[11px] text-content-muted">

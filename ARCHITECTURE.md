@@ -123,6 +123,11 @@ cliente descarta duplicatas e versões antigas antes de tocar o cache.
 - O painel recolhido "Cenários de demonstração (avaliadores)" no checkout
   expõe na UI as simulações que o enunciado pede para pagamento (conexão,
   recusa e desconexão); também configuráveis via `window.__KURIO__`/README.
+  Semântica de cada controle: **Conectar/Desconectar carteira** simula apenas o
+  handshake de uma extensão na aba — não é obrigatório e não altera o pedido
+  (a carteira destinatária é a selecionada em "Carteira e rede"); **Simular
+  recusa** faz o servidor terminar o pedido como `declined` (cenário
+  "pagamento recusado" do enunciado).
 
 ## Identidade visual (tokens)
 
