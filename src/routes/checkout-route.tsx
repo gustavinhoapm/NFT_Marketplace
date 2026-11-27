@@ -515,7 +515,14 @@ function CheckoutPage() {
                     {connecting ? 'Conectando…' : connected ? 'Conectado' : 'Conectar carteira'}
                   </Button>
                   {connected && (
-                    <button type="button" onClick={() => setConnected(false)} className="text-xs text-content-muted hover:text-danger">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setConnected(false)
+                        toast.info('Carteira desconectada desta aba.')
+                      }}
+                      className="text-xs text-content-muted hover:text-danger"
+                    >
                       Desconectar
                     </button>
                   )}
