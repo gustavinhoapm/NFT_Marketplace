@@ -47,12 +47,13 @@ test('quantidade, cupom e remoção', async ({ page }) => {
   await expect(page.getByText('Seu carrinho está vazio')).toBeVisible()
 })
 
-test('adicionar ao carrinho não leva ao checkout (ação própria)', async ({ page }) => {
+test('compra direta cria o item no carrinho mesmo sem concluir o checkout', async ({ page }) => {
   await page.goto('/nft/nft_007')
-  await page.getByRole('button', { name: 'Adicionar ao carrinho' }).first().click()
-  await expect(page.getByText('Adicionado ao carrinho.')).toBeVisible()
-  await expect(page).toHaveURL('/nft/nft_007')
-  await page.getByRole('link', { name: /Carrinho com/ }).click()
+  await page.getByRole('button', { name: 'Comprar', exact: true }).locator('visible=true').first().click()
+  // checkout exige autenticação: redireciona preservando o destino
+  await expect(page).toHaveURL(/\/entrar\?redirect=/)
+  // o item já foi adicionado ao carrinho de visitante
+  await page.goto('/carrinho')
   await expect(page.getByText('Golden Beat #207')).toBeVisible()
 })
 

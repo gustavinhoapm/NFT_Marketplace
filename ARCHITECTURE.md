@@ -113,6 +113,16 @@ cliente descarta duplicatas e versões antigas antes de tocar o cache.
   `docs/ASSETS.md`.
 - O seletor de edição no detalhe usa chips (frame) em vez de dropdown; a
   quantidade tem limite pelo estoque da edição.
+- O detalhe não tem botão "adicionar ao carrinho" próprio: o frame desenha
+  apenas "Comprar" (que cria o item no carrinho e segue ao checkout) e o
+  enunciado trata "adicionar/alterar/remover" como operações da tela de
+  carrinho. O botão circular de carrinho do frame mobile navega ao carrinho.
+- A lista de pedidos (`/pedidos`) não é um frame: existe para dar destino
+  coerente ao link "Minha coleção" do footer e para a recuperação de pedidos
+  após refresh/reconexão exigida pelo enunciado.
+- O painel recolhido "Cenários de demonstração (avaliadores)" no checkout
+  expõe na UI as simulações que o enunciado pede para pagamento (conexão,
+  recusa e desconexão); também configuráveis via `window.__KURIO__`/README.
 
 ## Identidade visual (tokens)
 

@@ -475,8 +475,29 @@ function CheckoutPage() {
               )}
             </div>
 
-            {/* Cenários exigidos pelo enunciado (conexão/recusa), fora do
-                composição visual do frame: recolhidos por padrão. */}
+            {createOrder.error && !needsConfirmation && (
+              <p role="alert" className="mt-4 rounded-sm bg-danger/10 p-3 text-xs text-danger">
+                {errorMessage(createOrder.error)}
+              </p>
+            )}
+
+            <Button
+              type="submit"
+              full
+              size="lg"
+              className="mt-6 hidden rounded-md md:flex"
+              disabled={preparing || createOrder.isPending || needsConfirmation || !cart?.items.length}
+            >
+              {createOrder.isPending ? 'Processando…' : 'Confirmar compra'}
+            </Button>
+            <p className="mt-3 hidden text-[10px] leading-relaxed text-content-subtle md:block">
+              O pedido só é confirmado após a resposta da simulação. Cliques repetidos reutilizam a
+              mesma chave de idempotência.
+            </p>
+
+            {/* Cenários exigidos pelo enunciado para o pagamento (conexão,
+                recusa e desconexão). Estado não desenhado no frame: fica
+                recolhido ao final da coluna, no mesmo padrão visual. */}
             <details className="mt-6 rounded-sm border border-line bg-coffee/30 p-3">
               <summary className="cursor-pointer text-[11px] font-bold text-content-muted">
                 Cenários de demonstração (avaliadores)
@@ -517,26 +538,6 @@ function CheckoutPage() {
                 </p>
               </div>
             </details>
-
-            {createOrder.error && !needsConfirmation && (
-              <p role="alert" className="mt-4 rounded-sm bg-danger/10 p-3 text-xs text-danger">
-                {errorMessage(createOrder.error)}
-              </p>
-            )}
-
-            <Button
-              type="submit"
-              full
-              size="lg"
-              className="mt-6 hidden rounded-md md:flex"
-              disabled={preparing || createOrder.isPending || needsConfirmation || !cart?.items.length}
-            >
-              {createOrder.isPending ? 'Processando…' : 'Confirmar compra'}
-            </Button>
-            <p className="mt-3 hidden text-[10px] leading-relaxed text-content-subtle md:block">
-              O pedido só é confirmado após a resposta da simulação. Cliques repetidos reutilizam a
-              mesma chave de idempotência.
-            </p>
           </aside>
         </form>
       </main>
