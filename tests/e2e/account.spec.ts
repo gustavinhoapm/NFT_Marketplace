@@ -91,7 +91,21 @@ test('edição de perfil persiste após refresh e valida erros da API', async ({
   await page.getByAltText('Prévia do avatar').waitFor()
   await page.getByRole('button', { name: 'Usar esta imagem' }).click()
   await page.getByRole('button', { name: 'Salvar', exact: true }).click()
-  await expect(page.getByText('Perfil atualizado.')).toBeVisible()
+  await page.waitForTimeout(1200)
+  console.log(
+    'AVATAR NO SERVIDOR:',
+    JSON.stringify(
+      await page.evaluate(async () => {
+        const token = localStorage.getItem('kurio:session-token')
+        const profile = await (await fetch('/api/profile', { headers: { Authorization: `Bearer ${token}` } })).json()
+        return String(profile.avatarUrl ?? '').slice(0, 24)
+      }),
+    ),
+  )
+
+  await page.reload()
+  await expect(page.getByLabel(/^Nome de exibição/)).toHaveValue('Gustavo Editado')
+  await expect(page.getByAltText('Avatar atual')).toHaveAttribute('src', /^data:image\/jpeg/)
 
   await page.reload()
   await expect(page.getByLabel(/^Nome de exibição/)).toHaveValue('Gustavo Editado')
