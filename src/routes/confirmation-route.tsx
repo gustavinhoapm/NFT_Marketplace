@@ -19,6 +19,14 @@ export const confirmationRoute = createRoute({
   component: ConfirmationPage,
 })
 
+/** Formato compacto do frame (ex.: "27 nov 2026") para caber nas 4 colunas. */
+function formatReceiptDate(value: string) {
+  return new Date(value)
+    .toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })
+    .replaceAll(' de ', ' ')
+    .replace('.', '')
+}
+
 /**
  * Recibo no padrão do frame: card centralizado com selo, meta da transação,
  * tabela de itens do snapshot e link simulado de explorador. Estados não
@@ -96,7 +104,7 @@ function ConfirmationPage() {
             <div>
               <dt className="font-bold">Data</dt>
               <dd className="mt-1">
-                {new Date(order.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                {formatReceiptDate(order.createdAt)}
               </dd>
             </div>
             <div>
